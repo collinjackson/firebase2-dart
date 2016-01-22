@@ -1,12 +1,17 @@
-library firebase.firebase;
+library firebase.mojo.firebase;
 
-import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+import 'package:sky_services/firebase/firebase.mojom.dart' as mojo;
 
 import '../firebase.dart';
 import '../disconnect.dart';
 import '../event.dart';
 import '../data_snapshot.dart';
 import '../transaction_result.dart';
+
+import 'data_snapshot.dart';
 
 class FirebaseImpl extends MojoFirebase {
   FirebaseImpl(String url) : super(url);
@@ -15,6 +20,8 @@ class FirebaseImpl extends MojoFirebase {
 
 class MojoFirebase extends MojoQuery implements Firebase {
   MojoFirebase(String url) : super(url);
+
+  MojoFirebase._withProxy(mojo.FirebaseProxy firebase) : super._withProxy(firebase);
 
   Disconnect get onDisconnect => null;
 
@@ -40,17 +47,38 @@ class MojoFirebase extends MojoQuery implements Firebase {
 
   void unauth() => null;
 
-  Firebase child(String path) => null;
+  Firebase child(String path) {
+    mojo.FirebaseProxy proxy = new mojo.FirebaseProxy.unbound();
+    _firebase.ptr.getChild(path, proxy);
+    return new MojoFirebase._withProxy(proxy);
+  }
 
   Firebase parent() => null;
 
-  Firebase root() => null;
+  Firebase root() {
+    mojo.FirebaseProxy proxy = new mojo.FirebaseProxy.unbound();
+    _firebase.ptr.getRoot(proxy);
+    return new MojoFirebase._withProxy(proxy);
+  }
 
   String get key => null;
 
   String toString() => null;
 
-  Future set(value) => null;
+  Future set(value) async {
+    var c = new Completer();
+    String jsonValue = JSON.encode({ "value": value });
+    _firebase
+      .ptr.setValue(jsonValue, null)
+      .then((mojo.FirebaseSetValueResponseParams response) {
+      if (response.error != null) {
+        c.completeError(response.error);
+      } else {
+        c.complete();
+      }
+    });
+    return c.future;
+  }
 
   Future update(Map<String, dynamic> value) => null;
 
@@ -76,17 +104,44 @@ class MojoFirebase extends MojoQuery implements Firebase {
   Future resetPassword(Map credentials) => null;
 }
 
+class _ValueEventListener implements mojo.ValueEventListener {
+  StreamController<Event> controller;
+  _ValueEventListener(this.controller);
+
+  void onCancelled(mojo.Error error) {
+    print("ValueEventListener onCancelled: ${error}");
+  }
+
+  void onDataChange(mojo.DataSnapshot snapshot) {
+    controller
+      .add(new Event(new MojoDataSnapshot.fromMojoObject(snapshot), null));
+  }
+}
+
 class MojoQuery implements Query {
+  mojo.FirebaseProxy _firebase;
+  Stream<Event> _onValue;
 
-  /**
-   * Construct a new default Query for a given URL.
-   */
-  MojoQuery(String url);
+  MojoQuery(String url) : _firebase = new mojo.FirebaseProxy.unbound() {
+    shell.connectToService("firebase::Firebase", _firebase);
+    _firebase.ptr.initWithUrl(url);
+  }
 
-  /**
-   * Streams for various data events.
-   */
-  Stream<Event> get onValue => null;
+  MojoQuery._withProxy(mojo.FirebaseProxy firebase) : _firebase = firebase;
+
+  Stream<Event> get onValue {
+    if (_onValue == null) {
+      mojo.ValueEventListenerStub stub = new mojo.ValueEventListenerStub.unbound();
+      StreamController<Event> controller = new StreamController<Event>.broadcast(
+        onListen: () => _firebase.ptr.addValueEventListener(stub),
+        onCancel: () => stub.close(),
+        sync: true
+      );
+      stub.impl = new _ValueEventListener(controller);
+      _onValue = controller.stream;
+    }
+    return _onValue;
+  }
 
   Stream<Event> get onChildAdded => null;
 
@@ -100,7 +155,12 @@ class MojoQuery implements Query {
    * Listens for exactly one event of the specified event type, and then stops
    * listening.
    */
-  Future<DataSnapshot> once(String eventType) => null;
+  Future<DataSnapshot> once(String eventType) async {
+    mojo.EventType mojoEventType = _stringToMojoEventType(eventType);
+    mojo.DataSnapshot result =
+      (await _firebase.ptr.observeSingleEventOfType(mojoEventType)).snapshot;
+    return new MojoDataSnapshot.fromMojoObject(result);
+  }
 
   /**
    * Generates a new Query object ordered by the specified child key.
@@ -183,4 +243,17 @@ class MojoQuery implements Query {
    * return a Firebase reference to that location.
    */
   Firebase ref() => null;
+}
+
+mojo.EventType _stringToMojoEventType(String eventType) {
+  switch(eventType) {
+    case "value": return mojo.EventType.EventTypeValue;
+    case "child_added": return mojo.EventType.EventTypeChildAdded;
+    case "child_changed": return mojo.EventType.EventTypeChildChanged;
+    case "child_removed": return mojo.EventType.EventTypeChildRemoved;
+    case "child_moved": return mojo.EventType.EventTypeChildMoved;
+    default:
+      assert(false);
+      return null;
+  }
 }
