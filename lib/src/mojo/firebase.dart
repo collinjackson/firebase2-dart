@@ -16,15 +16,41 @@ import 'auth_response.dart';
 import 'data_snapshot.dart';
 
 class FirebaseImpl extends MojoFirebase {
-  FirebaseImpl(String url) : super(url);
+  factory FirebaseImpl({
+    String databaseUrl,
+    String googleAppId,
+    String androidClientId,
+    String clientId,
+    String apiKey
+  }) {
+    return new MojoFirebase(
+      databaseUrl: databaseUrl,
+      googleAppId: googleAppId,
+      androidClientId: androidClientId,
+      clientId: clientId,
+      apiKey: apiKey
+    );
+  }
   static final ServerValue = null;
 }
 
 class MojoFirebase extends MojoQuery implements Firebase {
-  MojoFirebase(String url) : _path = <String>[], super(url);
+  MojoFirebase({
+    this.databaseUrl,
+    this.googleAppId,
+    this.androidClientId,
+    this.clientId,
+    this.apiKey
+  }) : _path = <String>[];
 
   MojoFirebase._withProxy(mojo.FirebaseProxy firebase, this._path)
     : super._withProxy(firebase);
+
+  final String databaseUrl;
+  final String googleAppId;
+  final String androidClientId;
+  final String clientId;
+  final String apiKey;
 
   // We have to keep track of our full path because we might be asked to provide
   // our key synchronously, and we might also be asked to create our parent

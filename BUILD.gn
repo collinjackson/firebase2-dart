@@ -1,0 +1,81 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//mojo/public/tools/bindings/mojom.gni")
+
+group("firebase") {
+  deps = [
+    ":interfaces",
+  ]
+
+  if (is_ios || is_android) {
+    deps += [ ":firebase_lib" ]
+  }
+
+  if (is_android) {
+    deps += [ ":interfaces_java" ]
+  }
+}
+
+mojom("interfaces") {
+  sources = [
+    "mojom/firebase.mojom",
+  ]
+}
+
+if (is_android) {
+  import("//build/config/android/config.gni")
+  import("//build/config/android/rules.gni")
+
+  android_library("firebase_lib") {
+    java_files = [
+      "src/org/domokit/firebase/FirebaseImpl.java",
+    ]
+
+    deps = [
+      "//base:base_java",
+      "//mojo/java",
+      "//mojo/public/java:bindings",
+      "//mojo/public/java:system",
+      ":interfaces_java",
+      "//third_party/firebase",
+    ]
+  }
+}
+
+if (is_ios) {
+  shared_library("firebase_lib") {
+    output_name = "Firebase"
+    sources = [
+      "mojom/firebase.mojom",
+      "src/firebase_impl.h",
+      "src/firebase_impl.mm",
+      "//mojo/public/cpp/application/interface_factory.h",
+      "sdk/Firebase.framework/Headers/Firebase.h",
+    ]
+
+    include_dirs = [
+      "sdk/Firebase.framework/Headers/"
+    ]
+
+    libs = [
+      "Firebase.framework",
+      "CFNetwork.framework",
+      "SystemConfiguration.framework",
+      "Security.framework",
+      "icucore",
+    ]
+
+    deps = [
+      "//sky/services/dynamic:sdk_lib",
+      ":interfaces",
+    ]
+
+    frameworks_dir = rebase_path("sdk", root_build_dir)
+    ldflags = [
+      "-F$frameworks_dir",
+      "-ObjC",
+    ]
+  }
+}
