@@ -15,42 +15,18 @@ import '../transaction_result.dart';
 import 'auth_response.dart';
 import 'data_snapshot.dart';
 
+export '../firebase.dart';
+
 class FirebaseImpl extends FlutterFirebase {
-  factory FirebaseImpl({
-    String databaseUrl,
-    String googleAppId,
-    String androidClientId,
-    String clientId,
-    String apiKey
-  }) {
-    return new MojoFirebase(
-      databaseUrl: databaseUrl,
-      googleAppId: googleAppId,
-      androidClientId: androidClientId,
-      clientId: clientId,
-      apiKey: apiKey
-    );
-  }
+  FirebaseImpl(String url) : super(url);
   static final ServerValue = null;
 }
 
 class FlutterFirebase extends FlutterQuery implements Firebase {
-  FlutterFirebase({
-    this.databaseUrl,
-    this.googleAppId,
-    this.androidClientId,
-    this.clientId,
-    this.apiKey
-  }) : _path = <String>[];
+  FlutterFirebase(String url) : _path = <String>[], super(url);
 
   FlutterFirebase._withProxy(mojo.FirebaseProxy firebase, this._path)
     : super._withProxy(firebase);
-
-  final String databaseUrl;
-  final String googleAppId;
-  final String androidClientId;
-  final String clientId;
-  final String apiKey;
 
   // We have to keep track of our full path because we might be asked to provide
   // our key synchronously, and we might also be asked to create our parent
