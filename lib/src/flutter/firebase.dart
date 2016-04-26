@@ -15,6 +15,8 @@ import '../transaction_result.dart';
 import 'auth_response.dart';
 import 'data_snapshot.dart';
 
+export '../firebase.dart';
+
 class FirebaseImpl extends FlutterFirebase {
   FirebaseImpl(String url) : super(url);
   static final ServerValue = null;

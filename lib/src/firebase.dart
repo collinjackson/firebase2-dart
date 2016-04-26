@@ -9,7 +9,7 @@ import 'transaction_result.dart';
 
 // Once conditional imports work, use dart:ui to determine whether to import
 // the mojo or js implementations
-// import 'js/firebase.dart';
+import 'js/firebase.dart';
 import 'mojo/firebase.dart';
 
 /**

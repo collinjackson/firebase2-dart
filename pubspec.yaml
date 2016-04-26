@@ -11,5 +11,7 @@ environment:
 dependencies:
   crypto: ^0.9.0
   http: ^0.11.2
+  flutter:
+    path: ../flutter/packages/flutter
 dev_dependencies:
   test: ^0.12.0

@@ -17,16 +17,16 @@ import '../firebase.dart';
  * can traverse into the snapshot by calling child() to return child
  * snapshots (which you could in turn call val() on).
  */
-class MojoDataSnapshot implements DataSnapshot {
+class FlutterDataSnapshot implements DataSnapshot {
   /**
-   * Holds a reference to the Mojo 'DataSnapshot' object.
+   * Holds a reference to the Flutter 'DataSnapshot' object.
    */
   final mojo.DataSnapshot _ds;
 
   /**
-   * Construct a new MojoDataSnapshot from a mojo DataSnapshot.
+   * Construct a new FlutterDataSnapshot from a mojo DataSnapshot.
    */
-  MojoDataSnapshot.fromMojoObject(mojo.DataSnapshot obj) : _ds = obj;
+  FlutterDataSnapshot.fromFlutterObject(mojo.DataSnapshot obj) : _ds = obj;
 
   bool get exists => true;
 
