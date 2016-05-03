@@ -6,10 +6,11 @@
 #include "base/logging.h"
 #include "base/strings/sys_string_conversions.h"
 
-#import <Firebase.h>
+#import <FIRApp.h>
+#import <FIROptions.h>
 
 namespace firebase {
-
+/*
 ::firebase::DataSnapshotPtr toMojoSnapshot(FDataSnapshot* snapshot) {
   ::firebase::DataSnapshotPtr mojoSnapshot(::firebase::DataSnapshot::New());
   mojoSnapshot->key = snapshot.key.UTF8String;
@@ -39,21 +40,15 @@ namespace firebase {
   // mojoAuthData->token = base::SysNSStringToUTF8(authData.token);
   return mojoAuthData.Pass();
 }
-
+*/
 FirebaseImpl::FirebaseImpl(mojo::InterfaceRequest<::firebase::Firebase> request)
     : binding_(this, request.Pass()) {}
 
 FirebaseImpl::~FirebaseImpl() {
-  [client_ release];
 }
 
-void FirebaseImpl::Initialize(
-  const mojo::String& databaseUrl,
-  const mojo::String& apiKey,
-  const mojo::String& appId,
-  const mojo::String& name
-) {
-  client_ = [[[::Firebase alloc] initWithUrl:@(databaseUrl.data())] retain];
+void FirebaseImpl::Configure() {
+  [FIRApp configure];
 }
 /*
 void FirebaseImpl::AddValueEventListener(::firebase::ValueEventListenerPtr ptr) {

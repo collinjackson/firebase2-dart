@@ -84,7 +84,6 @@ class FirebaseImpl : public ::firebase::Firebase {
   //   const ResetPasswordCallback& callback) override;
  private:
   mojo::StrongBinding<::firebase::Firebase> binding_;
-  ::Firebase* client_;
   std::vector<::firebase::ValueEventListenerPtr> value_event_listeners_;
   std::vector<::firebase::ChildEventListenerPtr> child_event_listeners_;
 
