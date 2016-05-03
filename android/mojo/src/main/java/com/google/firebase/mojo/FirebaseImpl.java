@@ -79,15 +79,13 @@ public class FirebaseImpl implements org.chromium.mojom.firebase.Firebase {
 
             String applicationId = client.getJSONObject("client_info").getString("android_app_id");
             builder.setApplicationId(applicationId);
+            FirebaseApp.initializeApp(mContext, builder.build());
+            Log.v(TAG, "Firebase was configured using google-services.json.");
         } catch(IOException e) {
             Log.e(TAG, "Missing google-services.json. Please add it to the assets folder.", e);
-            return;
         } catch(JSONException e) {
             Log.e(TAG, "Content of google-services.json was not in the expected format.", e);
-            return;
         }
-        FirebaseApp.initializeApp(mContext, builder.build());
-        Log.v(TAG, "Firebase was configured using google-services.json.");
     }
 
     // @Override
