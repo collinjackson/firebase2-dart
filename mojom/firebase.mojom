@@ -52,9 +52,9 @@ interface DatabaseReference {
   AddChildEventListener(string path, ChildEventListener listener);
   ObserveSingleEventOfType(string path, EventType eventType) => (DataSnapshot snapshot);
   SetValue(string path, string jsonValue, int32 priority, bool hasPriority) => (Error? error);
-  // RemoveValue(string path) => (Error? error);
+  RemoveValue(string path) => (Error? error);
   Push(string path, DatabaseReference& child) => (string key);
-  // SetPriority(string path, int32 priority) => (Error? error);
+  SetPriority(string path, int32 priority) => (Error? error);
 };
 
 [ServiceName="firebase::Firebase"]

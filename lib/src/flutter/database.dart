@@ -69,14 +69,14 @@ class _FlutterDatabaseReference extends _FlutterQuery implements DatabaseReferen
   //
   // Future update(Map<String, dynamic> value) => null;
   //
-  // Future remove() {
-  //   Completer completer = new Completer();
-  //   _firebase.ptr
-  //     .removeValue()
-  //     .then(_getResultCallback(completer));
-  //   return completer.future;
-  // }
-  //
+  Future remove() {
+    Completer completer = new Completer();
+    _proxy.ptr
+      .removeValue(path)
+      .then(_getResultCallback(completer));
+    return completer.future;
+  }
+
   DatabaseReference push() {
     _FlutterDatabaseReference child =
       new _FlutterDatabaseReference(database, null);
@@ -99,15 +99,15 @@ class _FlutterDatabaseReference extends _FlutterQuery implements DatabaseReferen
       .then(_getResultCallback(completer));
     return completer.future;
   }
-  //
-  // Future setPriority(int priority) {
-  //   Completer completer = new Completer();
-  //   _firebase.ptr
-  //     .setPriority(priority)
-  //     .then(_getResultCallback(completer));
-  //   return completer.future;
-  // }
-  //
+
+  Future setPriority(int priority) {
+    Completer completer = new Completer();
+    _proxy.ptr
+      .setPriority(path, priority)
+      .then(_getResultCallback(completer));
+    return completer.future;
+  }
+
   // Future<TransactionResult> transaction(update(currentVal),
   //     {bool applyLocally: true}) => new Future.value(throw new UnimplementedError());
 }

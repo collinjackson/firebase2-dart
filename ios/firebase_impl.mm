@@ -1,48 +1,17 @@
-// Copyright 2015 The Chromium Authors. All rights reserved.
+// Copyright 2016 Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 #include "database_reference_impl.h"
 #include "firebase_impl.h"
-#include "base/logging.h"
-#include "base/strings/sys_string_conversions.h"
 
 #import <FIRApp.h>
 #import <FIROptions.h>
 #import <FIRDatabase.h>
 
 namespace firebase {
-/*
-::firebase::DataSnapshotPtr toMojoSnapshot(FDataSnapshot* snapshot) {
-  ::firebase::DataSnapshotPtr mojoSnapshot(::firebase::DataSnapshot::New());
-  mojoSnapshot->key = snapshot.key.UTF8String;
-  NSDictionary *valueDictionary = @{@"value": snapshot.value};
-  NSData *data = [NSJSONSerialization dataWithJSONObject:valueDictionary
-                                                 options:0
-                                                   error:nil];
-  if (data != nil) {
-    NSString *jsonValue = [[NSString alloc] initWithData:data
-                                                encoding:NSUTF8StringEncoding];
-    mojoSnapshot->jsonValue = jsonValue.UTF8String;
-  }
-  return mojoSnapshot.Pass();
-}
 
-::firebase::ErrorPtr toMojoError(NSError* error) {
-  ::firebase::ErrorPtr mojoError(::firebase::Error::New());
-  mojoError->code = error.code;
-  mojoError->message = error.description.UTF8String;
-  return mojoError.Pass();
-}
 
-::firebase::AuthDataPtr toMojoAuthData(FAuthData* authData) {
-  ::firebase::AuthDataPtr mojoAuthData(::firebase::AuthData::New());
-  mojoAuthData->uid = authData.uid.UTF8String;
-  mojoAuthData->provider = authData.provider.UTF8String;
-  // mojoAuthData->token = base::SysNSStringToUTF8(authData.token);
-  return mojoAuthData.Pass();
-}
-*/
 FirebaseImpl::FirebaseImpl(mojo::InterfaceRequest<::firebase::Firebase> request)
     : binding_(this, request.Pass()) {}
 
@@ -183,15 +152,6 @@ void FirebaseImpl::ResetPassword(const mojo::String& email,
   }];
 }
 */
-
-// class StrongBindingFirebaseImpl : public FirebaseImpl {
-//  public:
-//   explicit StrongBindingFirebaseImpl(mojo::InterfaceRequest<Firebase> handle)
-//       : strong_binding_(this, handle.Pass()) {}
-//
-//  private:
-//   mojo::StrongBinding<Firebase> strong_binding_;
-// };
 
 }  // namespace firebase
 
