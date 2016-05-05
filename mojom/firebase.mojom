@@ -46,27 +46,25 @@ interface ChildEventListener {
   OnChildRemoved(DataSnapshot snapshot);
 };
 
+[ServiceName="firebase::DatabaseReference"]
 interface DatabaseReference {
   AddValueEventListener(string path, ValueEventListener listener);
   AddChildEventListener(string path, ChildEventListener listener);
   ObserveSingleEventOfType(string path, EventType eventType) => (DataSnapshot snapshot);
   SetValue(string path, string jsonValue, int32 priority, bool hasPriority) => (Error? error);
-  RemoveValue(string path) => (Error? error);
+  // RemoveValue(string path) => (Error? error);
   Push(string path, DatabaseReference& child) => (string key);
-  SetPriority(string path, int32 priority) => (Error? error);
+  // SetPriority(string path, int32 priority) => (Error? error);
 };
 
 [ServiceName="firebase::Firebase"]
 interface Firebase {
-  Initialize(
-    string databaseUrl,
-    string apiKey,
-    string appId,
-    string? name
-  );
+  // For now, we can only read configuration data from google-services.json on
+  // Android or GoogleService-Info.plist
+  Configure();
 
   // Database
-  // Reference(string? path, DatabaseReference& result);
+  Reference(DatabaseReference& result);
   // GoOffline();
   // GoOnline();
 

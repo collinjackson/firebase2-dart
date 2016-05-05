@@ -8,4 +8,4 @@ library firebase;
 
 export 'src/app.dart';
 export 'src/database.dart';
-export 'src/auth.dart';
+export 'src/event.dart';

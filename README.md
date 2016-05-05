@@ -31,7 +31,7 @@ To build for iOS:
 ```
 ./sky/tools/gn --ios --simulator --enable-firebase
 ninja -C out/ios_sim_Debug/
-cp out/ios_sim_Debug/libFlutter.dylib third_party/firebase/lib/generated/ios
+cp out/ios_sim_Debug/libFirebase.dylib third_party/firebase/lib/generated/ios
 cp out/ios_sim_Debug/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
 ```
 

@@ -1,18 +1,20 @@
 import 'package:flutter/services.dart';
 
 import '../../generated/firebase.mojom.dart' as mojom;
+import '../app.dart';
 
-class FirebaseAppImpl {
-  FirebaseAppImpl({
-    String databaseUrl,
-    String appId,
-    String clientId,
-    String apiKey
-  }) : _firebase = new mojom.FirebaseProxy.unbound() {
-    shell.connectToService("firebase::Firebase", _firebase);
-    _firebase.ptr.initialize(databaseUrl, appId, clientId, apiKey);
-    print('success!');
+abstract class FirebaseAppImpl implements FirebaseApp {
+  static final FirebaseApp instance = new _FirebaseApp();
+
+  mojom.FirebaseProxy get proxy;
+}
+
+class _FirebaseApp extends FirebaseAppImpl {
+  _FirebaseApp() : _proxy = new mojom.FirebaseProxy.unbound() {
+    shell.connectToService("firebase::Firebase", _proxy);
+    _proxy.ptr.configure();
   }
 
-  mojom.FirebaseProxy _firebase;
+  final mojom.FirebaseProxy _proxy;
+  mojom.FirebaseProxy get proxy => _proxy;
 }

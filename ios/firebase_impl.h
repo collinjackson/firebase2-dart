@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef SKY_SERVICES_FIREBASE_IOS_FIREBASEIMPL_H_
-#define SKY_SERVICES_FIREBASE_IOS_FIREBASEIMPL_H_
+#ifndef IOS_FIREBASEIMPL_H_
+#define IOS_FIREBASEIMPL_H_
 
 #include "base/macros.h"
 #include "mojo/public/cpp/application/interface_factory.h"
@@ -23,19 +23,8 @@ class FirebaseImpl : public ::firebase::Firebase {
   explicit FirebaseImpl(mojo::InterfaceRequest<Firebase> request);
   ~FirebaseImpl() override;
 
-  void Initialize(
-    const mojo::String& databaseUrl,
-    const mojo::String& apiKey,
-    const mojo::String& appId,
-    const mojo::String& name
-  ) override;
-  // void AddValueEventListener(
-  //   ::firebase::ValueEventListenerPtr listener) override;
-  // void AddChildEventListener(
-  //   ::firebase::ChildEventListenerPtr listener) override;
-  // void ObserveSingleEventOfType(
-  //   ::firebase::EventType eventType,
-  //   const ObserveSingleEventOfTypeCallback& callback) override;
+  void Configure() override;
+  void Reference(mojo::InterfaceRequest<DatabaseReference> request) override;
   // void AuthWithCustomToken(
   //   const mojo::String& token,
   //   const AuthWithCustomTokenCallback& callback) override;
@@ -50,21 +39,6 @@ class FirebaseImpl : public ::firebase::Firebase {
   //   const mojo::String& password,
   //   const AuthWithPasswordCallback& callback) override;
   // void Unauth(const UnauthCallback& callback) override;
-  // void GetChild(
-  //     const mojo::String& path,
-  //     mojo::InterfaceRequest<Firebase> child) override;
-  // void GetParent(mojo::InterfaceRequest<Firebase> parent) override;
-  // void GetRoot(mojo::InterfaceRequest<Firebase> root) override;
-  // void RemoveValue(const RemoveValueCallback& callback) override;
-  // void SetValue(
-  //   const mojo::String& jsonValue,
-  //   int32_t priority,
-  //   bool hasPriority,
-  //   const SetValueCallback& callback) override;
-  // void Push(mojo::InterfaceRequest<Firebase> child,
-  //   const PushCallback& callback) override;
-  // void SetPriority(int32_t priority,
-  //   const SetPriorityCallback& callback) override;
   // void CreateUser(const mojo::String& email,
   //   const mojo::String& password,
   //   const CreateUserCallback& callback) override;
@@ -99,4 +73,4 @@ class FirebaseFactory
 
 }  // namespace firebase
 
-#endif  // SKY_SERVICES_FIREBASE_IOS_FIREBASEIMPL_H_
+#endif  // IOS_FIREBASEIMPL_H_

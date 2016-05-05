@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include "database_reference_impl.h"
 #include "firebase_impl.h"
 #include "base/logging.h"
 #include "base/strings/sys_string_conversions.h"
 
 #import <FIRApp.h>
 #import <FIROptions.h>
+#import <FIRDatabase.h>
 
 namespace firebase {
 /*
@@ -50,92 +52,12 @@ FirebaseImpl::~FirebaseImpl() {
 void FirebaseImpl::Configure() {
   [FIRApp configure];
 }
+
+void FirebaseImpl::Reference(mojo::InterfaceRequest<DatabaseReference> request) {
+  new DatabaseReferenceImpl(request.Pass(), [FIRDatabase database].reference);
+}
+
 /*
-void FirebaseImpl::AddValueEventListener(::firebase::ValueEventListenerPtr ptr) {
-  ::firebase::ValueEventListener *listener = ptr.get();
-  FirebaseHandle handle = [client_ observeEventType:FEventTypeValue
-                                          withBlock:^(FDataSnapshot *snapshot) {
-    listener->OnDataChange(toMojoSnapshot(snapshot));
-  } withCancelBlock:^(NSError *error) {
-    listener->OnCancelled(toMojoError(error));
-  }];
-  ptr.set_connection_error_handler([this, handle, listener]() {
-    [client_ removeObserverWithHandle:handle];
-    auto it = std::find_if(value_event_listeners_.begin(),
-                           value_event_listeners_.end(),
-                           [listener](const ::firebase::ValueEventListenerPtr& p) {
-                             return (p.get() == listener);
-                           });
-    DCHECK(it != value_event_listeners_.end());
-    value_event_listeners_.erase(it);
-  });
-  value_event_listeners_.emplace_back(ptr.Pass());
-}
-
-void FirebaseImpl::AddChildEventListener(::firebase::ChildEventListenerPtr ptr) {
-  ::firebase::ChildEventListener *listener = ptr.get();
-  void (^cancelBlock)(NSError *) = ^(NSError *error) {
-    listener->OnCancelled(toMojoError(error));
-  };
-
-  void (^addedBlock)(FDataSnapshot *, NSString *) = ^(FDataSnapshot *snapshot, NSString *prevKey) {
-    listener->OnChildAdded(toMojoSnapshot(snapshot), base::SysNSStringToUTF8(prevKey));
-  };
-  FirebaseHandle addedHandle = [client_ observeEventType:FEventTypeChildAdded
-                          andPreviousSiblingKeyWithBlock:addedBlock
-                                         withCancelBlock:cancelBlock];
-
-  void (^changedBlock)(FDataSnapshot *, NSString *) = ^(FDataSnapshot *snapshot, NSString *prevKey) {
-    listener->OnChildChanged(toMojoSnapshot(snapshot), base::SysNSStringToUTF8(prevKey));
-  };
-  FirebaseHandle changedHandle = [client_ observeEventType:FEventTypeChildChanged
-                            andPreviousSiblingKeyWithBlock:changedBlock
-                                           withCancelBlock:cancelBlock];
-
-  void (^movedBlock)(FDataSnapshot *, NSString *) = ^(FDataSnapshot *snapshot, NSString *prevKey) {
-    listener->OnChildMoved(toMojoSnapshot(snapshot), base::SysNSStringToUTF8(prevKey));
-  };
-  FirebaseHandle movedHandle = [client_ observeEventType:FEventTypeChildMoved
-                          andPreviousSiblingKeyWithBlock:movedBlock
-                                         withCancelBlock:cancelBlock];
-
-  void (^removedBlock)(FDataSnapshot *snapshot) = ^(FDataSnapshot *snapshot) {
-    listener->OnChildRemoved(toMojoSnapshot(snapshot));
-  };
-  FirebaseHandle removedHandle = [client_ observeEventType:FEventTypeChildRemoved
-                                                 withBlock:removedBlock
-                                           withCancelBlock:cancelBlock];
-
-  ptr.set_connection_error_handler(
-    [this, addedHandle, changedHandle, movedHandle, removedHandle, listener]() {
-      [client_ removeObserverWithHandle:addedHandle];
-      [client_ removeObserverWithHandle:changedHandle];
-      [client_ removeObserverWithHandle:movedHandle];
-      [client_ removeObserverWithHandle:removedHandle];
-      auto it = std::find_if(child_event_listeners_.begin(),
-                             child_event_listeners_.end(),
-                             [listener](const ::firebase::ChildEventListenerPtr& p) {
-                               return (p.get() == listener);
-                             });
-      DCHECK(it != child_event_listeners_.end());
-      child_event_listeners_.erase(it);
-    }
-  );
-  child_event_listeners_.emplace_back(ptr.Pass());
-}
-
-void FirebaseImpl::ObserveSingleEventOfType(
-    ::firebase::EventType eventType,
-    const ObserveSingleEventOfTypeCallback& callback) {
-  ObserveSingleEventOfTypeCallback *copyCallback =
-    new ObserveSingleEventOfTypeCallback(callback);
-  [client_ observeSingleEventOfType:static_cast<FEventType>(eventType)
-                          withBlock:^(FDataSnapshot *snapshot) {
-    copyCallback->Run(toMojoSnapshot(snapshot));
-    delete copyCallback;
-  }];
-}
-
 void FirebaseImpl::AuthWithCustomToken(
   const mojo::String& token,
   const AuthWithCustomTokenCallback& callback) {
@@ -182,79 +104,6 @@ void FirebaseImpl::AuthWithPassword(
 void FirebaseImpl::Unauth(const UnauthCallback& callback) {
   [client_ unauth];
   callback.Run(toMojoError(nullptr));
-}
-
-void FirebaseImpl::GetChild(
-    const mojo::String& path,
-    mojo::InterfaceRequest<Firebase> request) {
-  FirebaseImpl *child = new FirebaseImpl(request.Pass());
-  child->client_ = [[client_ childByAppendingPath:@(path.data())] retain];
-}
-
-void FirebaseImpl::GetParent(mojo::InterfaceRequest<Firebase> request) {
-  FirebaseImpl *parent = new FirebaseImpl(request.Pass());
-  parent->client_ = [[client_ parent] retain];
-}
-
-void FirebaseImpl::GetRoot(mojo::InterfaceRequest<::firebase::Firebase> request) {
-  FirebaseImpl *root = new FirebaseImpl(request.Pass());
-  root->client_ = [[client_ root] retain];
-}
-
-void FirebaseImpl::SetValue(const mojo::String& jsonValue,
-    int32_t priority,
-    bool hasPriority,
-    const SetValueCallback& callback) {
-  SetValueCallback *copyCallback =
-    new SetValueCallback(callback);
-  NSData *data = [@(jsonValue.data()) dataUsingEncoding:NSUTF8StringEncoding];
-  NSError *error;
-  NSDictionary *valueDictionary = [NSJSONSerialization JSONObjectWithData:data
-                                                                  options:0
-                                                                    error:&error];
-  id value = [valueDictionary valueForKey:@"value"];
-  void (^completionBlock)(NSError *, ::Firebase* ref) = ^(NSError* error, ::Firebase* ref) {
-    copyCallback->Run(toMojoError(error));
-    delete copyCallback;
-  };
-  if (valueDictionary != nil) {
-    if (hasPriority) {
-      [client_     setValue:value
-                andPriority:@(priority)
-        withCompletionBlock:completionBlock];
-    } else {
-      [client_ setValue:value withCompletionBlock:completionBlock];
-    }
-  } else {
-    completionBlock(error, client_);
-  }
-}
-
-void FirebaseImpl::RemoveValue(const RemoveValueCallback& callback) {
-  RemoveValueCallback *copyCallback =
-    new RemoveValueCallback(callback);
-  [client_ removeValueWithCompletionBlock:^(NSError *error, ::Firebase *ref) {
-    copyCallback->Run(toMojoError(error));
-    delete copyCallback;
-  }];
-}
-
-void FirebaseImpl::Push(mojo::InterfaceRequest<Firebase> request,
-  const PushCallback& callback) {
-  FirebaseImpl *child = new FirebaseImpl(request.Pass());
-  child->client_ = [[client_ childByAutoId] retain];
-  callback.Run(base::SysNSStringToUTF8(child->client_.key));
-}
-
-void FirebaseImpl::SetPriority(int32_t priority,
-  const SetPriorityCallback& callback) {
-  SetPriorityCallback *copyCallback =
-    new SetPriorityCallback(callback);
-  [client_  setPriority:@(priority)
-    withCompletionBlock:^(NSError *error, ::Firebase *ref) {
-    copyCallback->Run(toMojoError(error));
-    delete copyCallback;
-  }];
 }
 
 void FirebaseImpl::CreateUser(const mojo::String& email,

@@ -29,14 +29,19 @@ if (is_ios) {
     output_name = "Firebase"
     sources = [
       "mojom/firebase.mojom",
+      "ios/database_reference_impl.h",
+      "ios/database_reference_impl.mm",
       "ios/firebase_impl.h",
       "ios/firebase_impl.mm",
       "//mojo/public/cpp/application/interface_factory.h",
       "sdk/ios/FirebaseAnalytics/Frameworks/FirebaseAnalytics.framework/Headers/FIRApp.h",
+      "sdk/ios/FirebaseDatabase/Frameworks/FirebaseDatabase.framework/Headers/FIRDatabaseReference.h",
+      "sdk/ios/FirebaseDatabase/Frameworks/FirebaseDatabase.framework/Headers/FIRDataEventType.h",
     ]
 
     include_dirs = [
-      "sdk/ios/FirebaseAnalytics/Frameworks/FirebaseAnalytics.framework/Headers/"
+      "sdk/ios/FirebaseAnalytics/Frameworks/FirebaseAnalytics.framework/Headers/",
+      "sdk/ios/FirebaseDatabase/Frameworks/FirebaseDatabase.framework/Headers/",
     ]
 
     libs = [
@@ -91,6 +96,10 @@ if (is_ios) {
     deps = [
       "//sky/services/dynamic:sdk_lib",
       ":interfaces",
+    ]
+
+    cflags_objcc = [
+      "-Wno-nullability-completeness",
     ]
 
     ldflags = [

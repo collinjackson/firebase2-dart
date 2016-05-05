@@ -2,11 +2,10 @@ library firebase.js.snapshot;
 
 import 'dart:convert';
 
-import 'package:sky_services/firebase/firebase.mojom.dart' as mojo;
+import '../../generated/firebase.mojom.dart' as mojom;
 
 import '../data_snapshot.dart';
-
-import '../firebase.dart';
+import '../database.dart';
 
 /**
  * A DataSnapshot contains data from a Firebase location. Any time you read
@@ -21,12 +20,12 @@ class FlutterDataSnapshot implements DataSnapshot {
   /**
    * Holds a reference to the Flutter 'DataSnapshot' object.
    */
-  final mojo.DataSnapshot _ds;
+  final mojom.DataSnapshot _ds;
 
   /**
    * Construct a new FlutterDataSnapshot from a mojo DataSnapshot.
    */
-  FlutterDataSnapshot.fromFlutterObject(mojo.DataSnapshot obj) : _ds = obj;
+  FlutterDataSnapshot.fromFlutterObject(mojom.DataSnapshot obj) : _ds = obj;
 
   bool get exists => true;
 
@@ -44,7 +43,7 @@ class FlutterDataSnapshot implements DataSnapshot {
 
   int get numChildren => null;
 
-  Firebase ref() => null;
+  DatabaseReference ref() => null;
 
   dynamic getPriority() => null;
 
