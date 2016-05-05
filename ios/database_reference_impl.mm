@@ -6,10 +6,10 @@
 #include "database_reference_impl.h"
 #include "firebase_impl.h"
 
-#import <FIRApp.h>
-#import <FIROptions.h>
-#import <FIRDatabaseReference.h>
-#import <FIRDataEventType.h>
+#import <FirebaseAnalytics/FIRApp.h>
+#import <FirebaseAnalytics/FIROptions.h>
+#import <FirebaseDatabase/FIRDatabaseReference.h>
+#import <FirebaseDatabase/FIRDataEventType.h>
 
 namespace firebase {
 

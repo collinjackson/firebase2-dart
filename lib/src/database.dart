@@ -33,23 +33,23 @@ abstract class DatabaseReference extends Query {
    */
   DatabaseReference root();
 
-  // /**
-  //  * Write data to this Firebase location. This will overwrite any data at
-  //  * this location and all child locations.
-  //  *
-  //  * The effect of the write will be visible immediately and the corresponding
-  //  * events ('onValue', 'onChildAdded', etc.) will be triggered.
-  //  * Synchronization of the data to the Firebase servers will also be started,
-  //  * and the Future returned by this method will complete after synchronization
-  //  * has finished.
-  //  *
-  //  * Passing null for the new value is equivalent to calling remove().
-  //  *
-  //  * A single set() will generate a single onValue event at the location where
-  //  * the set() was performed.
-  //  */
-  // Future set(value);
-  //
+  /**
+   * Write data to this Firebase location. This will overwrite any data at
+   * this location and all child locations.
+   *
+   * The effect of the write will be visible immediately and the corresponding
+   * events ('onValue', 'onChildAdded', etc.) will be triggered.
+   * Synchronization of the data to the Firebase servers will also be started,
+   * and the Future returned by this method will complete after synchronization
+   * has finished.
+   *
+   * Passing null for the new value is equivalent to calling remove().
+   *
+   * A single set() will generate a single onValue event at the location where
+   * the set() was performed.
+   */
+  Future set(value);
+
   // /**
   //  * Write the enumerated children to this Firebase location. This will only
   //  * overwrite the children enumerated in the 'value' parameter and will leave
@@ -59,19 +59,19 @@ abstract class DatabaseReference extends Query {
   //  * completed with the Firebase servers.
   //  */
   // Future update(Map<String, dynamic> value);
-  //
-  // /**
-  //  * Remove the data at this Firebase location. Any data at child locations
-  //  * will also be deleted.
-  //  *
-  //  * The effect of this delete will be visible immediately and the
-  //  * corresponding events (onValue, onChildAdded, etc.) will be triggered.
-  //  * Synchronization of the delete to the Firebase servers will also be
-  //  * started, and the Future returned by this method will complete after the
-  //  * synchronization has finished.
-  //  */
-  // Future remove();
-  //
+
+  /**
+   * Remove the data at this Firebase location. Any data at child locations
+   * will also be deleted.
+   *
+   * The effect of this delete will be visible immediately and the
+   * corresponding events (onValue, onChildAdded, etc.) will be triggered.
+   * Synchronization of the delete to the Firebase servers will also be
+   * started, and the Future returned by this method will complete after the
+   * synchronization has finished.
+   */
+  Future remove();
+
   /**
    * Push generates a new child location using a unique name and returns a
    * Firebase reference to it. This is useful when the children of a Firebase
@@ -81,32 +81,32 @@ abstract class DatabaseReference extends Query {
    * timestamp so that the resulting list will be chronologically sorted.
    */
   DatabaseReference push();
-  //
-  // /**
-  //  * Write data to a Firebase location, like set(), but also specify the
-  //  * priority for that data. Identical to doing a set() followed by a
-  //  * setPriority(), except it is combined into a single atomic operation to
-  //  * ensure the data is ordered correctly from the start.
-  //  *
-  //  * Returns a Future which will complete when the data has been synchronized
-  //  * with Firebase.
-  //  */
-  // Future setWithPriority(value, int priority);
-  //
-  // /**
-  //  * Set a priority for the data at this Firebase location. A priority can
-  //  * be either a number or a string and is used to provide a custom ordering
-  //  * for the children at a location. If no priorities are specified, the
-  //  * children are ordered by name. This ordering affects the enumeration
-  //  * order of DataSnapshot.forEach(), as well as the prevChildName parameter
-  //  * passed to the onChildAdded and onChildMoved event handlers.
-  //  *
-  //  * You cannot set a priority on an empty location. For this reason,
-  //  * setWithPriority() should be used when setting initial data with a
-  //  * specific priority, and this function should be used when updating the
-  //  * priority of existing data.
-  //  */
-  // Future setPriority(int priority);
+
+  /**
+   * Write data to a Firebase location, like set(), but also specify the
+   * priority for that data. Identical to doing a set() followed by a
+   * setPriority(), except it is combined into a single atomic operation to
+   * ensure the data is ordered correctly from the start.
+   *
+   * Returns a Future which will complete when the data has been synchronized
+   * with Firebase.
+   */
+  Future setWithPriority(value, int priority);
+
+  /**
+   * Set a priority for the data at this Firebase location. A priority can
+   * be either a number or a string and is used to provide a custom ordering
+   * for the children at a location. If no priorities are specified, the
+   * children are ordered by name. This ordering affects the enumeration
+   * order of DataSnapshot.forEach(), as well as the prevChildName parameter
+   * passed to the onChildAdded and onChildMoved event handlers.
+   *
+   * You cannot set a priority on an empty location. For this reason,
+   * setWithPriority() should be used when setting initial data with a
+   * specific priority, and this function should be used when updating the
+   * priority of existing data.
+   */
+  Future setPriority(int priority);
 }
 
 abstract class Query {

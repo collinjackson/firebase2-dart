@@ -36,14 +36,16 @@ if (is_ios) {
       "ios/firebase_impl.h",
       "ios/firebase_impl.mm",
       "//mojo/public/cpp/application/interface_factory.h",
-      "sdk/ios/FirebaseAnalytics/Frameworks/FirebaseAnalytics.framework/Headers/FIRApp.h",
-      "sdk/ios/FirebaseDatabase/Frameworks/FirebaseDatabase.framework/Headers/FIRDatabaseReference.h",
-      "sdk/ios/FirebaseDatabase/Frameworks/FirebaseDatabase.framework/Headers/FIRDataEventType.h",
+      "sdk/ios/Headers/Public/FirebaseAnalytics/FIRApp.h",
+      "sdk/ios/Headers/Public/FirebaseAuth/FIRAuth.h",
+      "sdk/ios/Headers/Public/FirebaseDatabase/FIRDatabaseReference.h",
+      "sdk/ios/Headers/Public/FirebaseDatabase/FIRDataEventType.h",
     ]
 
     include_dirs = [
-      "sdk/ios/FirebaseAnalytics/Frameworks/FirebaseAnalytics.framework/Headers/",
-      "sdk/ios/FirebaseDatabase/Frameworks/FirebaseDatabase.framework/Headers/",
+      "sdk/ios/Headers/Public/FirebaseAnalytics",
+      "sdk/ios/Headers/Public/FirebaseAuth",
+      "sdk/ios/Headers/Public/FirebaseDatabase",
     ]
 
     libs = [

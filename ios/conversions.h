@@ -5,13 +5,13 @@
 #include "third_party/firebase/mojom/firebase.mojom.h"
 
 @class FIRDataSnapshot;
-@class FIRAuthData;
+@class FIRUser;
 @class NSError;
 
 namespace firebase {
 
 ErrorPtr toMojoError(NSError* error);
 DataSnapshotPtr toMojoSnapshot(FIRDataSnapshot* snapshot);
-AuthDataPtr toMojoAuthData(FIRAuthData* authData);
+UserPtr toMojoUser(FIRUser* user);
 
 }  // namespace firebase

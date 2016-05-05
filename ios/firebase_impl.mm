@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include "conversions.h"
 #include "database_reference_impl.h"
 #include "firebase_impl.h"
 
-#import <FIRApp.h>
-#import <FIROptions.h>
-#import <FIRDatabase.h>
+#import <FirebaseAnalytics/FIRApp.h>
+#import <FirebaseAnalytics/FIROptions.h>
+#import <FirebaseAuth/FIRAuth.h>
+#import <FirebaseDatabase/FIRDatabase.h>
 
 namespace firebase {
 
@@ -31,17 +33,17 @@ void FirebaseImpl::AuthWithCustomToken(
   const mojo::String& token,
   const AuthWithCustomTokenCallback& callback) {
 }
-
-void FirebaseImpl::AuthAnonymously(
-  const AuthAnonymouslyCallback& callback) {
-  AuthAnonymouslyCallback *copyCallback =
-    new AuthAnonymouslyCallback(callback);
-  [client_ authAnonymouslyWithCompletionBlock:^(NSError *error, FAuthData *authData) {
-    copyCallback->Run(toMojoError(error), toMojoAuthData(authData));
+*/
+void FirebaseImpl::SignInAnonymously(
+  const SignInAnonymouslyCallback& callback) {
+  SignInAnonymouslyCallback *copyCallback =
+    new SignInAnonymouslyCallback(callback);
+  [[FIRAuth auth] signInAnonymouslyWithCompletion:^(FIRUser *user, NSError *error) {
+    copyCallback->Run(toMojoUser(user), toMojoError(error));
     delete copyCallback;
   }];
 }
-
+/*
 void FirebaseImpl::AuthWithOAuthToken(
   const mojo::String& provider,
   const mojo::String& credentials,
@@ -69,12 +71,13 @@ void FirebaseImpl::AuthWithPassword(
     delete copyCallback;
   }];
 }
-
-void FirebaseImpl::Unauth(const UnauthCallback& callback) {
-  [client_ unauth];
-  callback.Run(toMojoError(nullptr));
+*/
+void FirebaseImpl::SignOut(const SignOutCallback& callback) {
+  NSError *error = nil;
+  [[FIRAuth auth] signOut:&error];
+  callback.Run(toMojoError(error));
 }
-
+/*
 void FirebaseImpl::CreateUser(const mojo::String& email,
   const mojo::String& password,
   const CreateUserCallback& callback) {

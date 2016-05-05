@@ -23,9 +23,7 @@ struct Error {
   string message;
 };
 
-struct AuthData {
-  string refreshToken;
-  string provider;
+struct User {
   string providerID;
   string uid;
   string displayName;
@@ -69,11 +67,11 @@ interface Firebase {
   // GoOnline();
 
   // Auth
+  SignInAnonymously() => (User? user, Error? error);
+  SignOut() => (Error? error);
   // AuthWithCustomToken(string token) => (Error? error, AuthData? authData);
-  // AuthAnonymously() => (Error? error, AuthData? authData);
   // // AuthWithOAuthToken(string provider, string credentials) => (Error? error, AuthData? authData);
   // AuthWithPassword(string email, string password) => (Error? error, AuthData? authData);
-  // Unauth() => (Error? error);
   // // CreateUser(string email, string password) => (Error? error, string? jsonValue);
   // // // ChangeEmail(string oldEmail, string password, string newEmail) => (Error? error);
   // ChangePassword(string newPassword, string email, string oldPassword) => (Error? error);

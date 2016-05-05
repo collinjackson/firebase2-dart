@@ -4,7 +4,8 @@
 
 #include "conversions.h"
 
-#import <FIRDatabaseReference.h>
+#import <FirebaseAuth/FIRUser.h>
+#import <FirebaseDatabase/FIRDatabaseReference.h>
 
 namespace firebase {
 
@@ -30,12 +31,14 @@ ErrorPtr toMojoError(NSError* error) {
   return mojoError.Pass();
 }
 
-// AuthDataPtr toMojoAuthData(FIRAuthData* authData) {
-//   AuthDataPtr mojoAuthData(::firebase::AuthData::New());
-//   mojoAuthData->uid = authData.uid.UTF8String;
-//   mojoAuthData->provider = authData.provider.UTF8String;
-//   // mojoAuthData->token = base::SysNSStringToUTF8(authData.token);
-//   return mojoAuthData.Pass();
-// }
+UserPtr toMojoUser(FIRUser* user) {
+  UserPtr mojoUser(::firebase::User::New());
+  mojoUser->providerID = user.providerID.UTF8String;
+  mojoUser->uid = user.uid.UTF8String;
+  mojoUser->displayName = user.displayName.UTF8String;
+  mojoUser->photoURL = user.photoURL.absoluteString.UTF8String;
+  mojoUser->email = user.email.UTF8String;
+  return mojoUser.Pass();
+}
 
 }  // namespace firebase

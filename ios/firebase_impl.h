@@ -25,11 +25,12 @@ class FirebaseImpl : public ::firebase::Firebase {
 
   void Configure() override;
   void Reference(mojo::InterfaceRequest<DatabaseReference> request) override;
+  void SignInAnonymously(
+    const SignInAnonymouslyCallback& callback) override;
+  void SignOut(const SignOutCallback& callback) override;
   // void AuthWithCustomToken(
   //   const mojo::String& token,
   //   const AuthWithCustomTokenCallback& callback) override;
-  // void AuthAnonymously(
-  //   const AuthAnonymouslyCallback& callback) override;
   // void AuthWithOAuthToken(
   //   const mojo::String& provider,
   //   const mojo::String& credentials,
@@ -38,7 +39,6 @@ class FirebaseImpl : public ::firebase::Firebase {
   //   const mojo::String& email,
   //   const mojo::String& password,
   //   const AuthWithPasswordCallback& callback) override;
-  // void Unauth(const UnauthCallback& callback) override;
   // void CreateUser(const mojo::String& email,
   //   const mojo::String& password,
   //   const CreateUserCallback& callback) override;

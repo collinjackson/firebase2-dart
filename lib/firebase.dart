@@ -7,5 +7,6 @@ library firebase;
 // export 'src/transaction_result.dart';
 
 export 'src/app.dart';
+export 'src/auth.dart';
 export 'src/database.dart';
 export 'src/event.dart';
