@@ -1482,6 +1482,151 @@ class DatabaseReferenceSetValueResponseParams extends bindings.Struct {
 }
 
 
+class _DatabaseReferenceRemoveValueParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(16, 0)
+  ];
+  String path = null;
+
+  _DatabaseReferenceRemoveValueParams() : super(kVersions.last.size);
+
+  static _DatabaseReferenceRemoveValueParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static _DatabaseReferenceRemoveValueParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    _DatabaseReferenceRemoveValueParams result = new _DatabaseReferenceRemoveValueParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      result.path = decoder0.decodeString(8, false);
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    var encoder0 = encoder.getStructEncoderAtOffset(kVersions.last);
+    try {
+      encoder0.encodeString(path, 8, false);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "path of struct _DatabaseReferenceRemoveValueParams: $e";
+      rethrow;
+    }
+  }
+
+  String toString() {
+    return "_DatabaseReferenceRemoveValueParams("
+           "path: $path" ")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    map["path"] = path;
+    return map;
+  }
+}
+
+
+class DatabaseReferenceRemoveValueResponseParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(16, 0)
+  ];
+  Error error = null;
+
+  DatabaseReferenceRemoveValueResponseParams() : super(kVersions.last.size);
+
+  static DatabaseReferenceRemoveValueResponseParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static DatabaseReferenceRemoveValueResponseParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    DatabaseReferenceRemoveValueResponseParams result = new DatabaseReferenceRemoveValueResponseParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      var decoder1 = decoder0.decodePointer(8, true);
+      result.error = Error.decode(decoder1);
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    var encoder0 = encoder.getStructEncoderAtOffset(kVersions.last);
+    try {
+      encoder0.encodeStruct(error, 8, true);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "error of struct DatabaseReferenceRemoveValueResponseParams: $e";
+      rethrow;
+    }
+  }
+
+  String toString() {
+    return "DatabaseReferenceRemoveValueResponseParams("
+           "error: $error" ")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    map["error"] = error;
+    return map;
+  }
+}
+
+
 class _DatabaseReferencePushParams extends bindings.Struct {
   static const List<bindings.StructDataHeader> kVersions = const [
     const bindings.StructDataHeader(24, 0)
@@ -1633,6 +1778,165 @@ class DatabaseReferencePushResponseParams extends bindings.Struct {
   Map toJson() {
     Map map = new Map();
     map["key"] = key;
+    return map;
+  }
+}
+
+
+class _DatabaseReferenceSetPriorityParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(24, 0)
+  ];
+  String path = null;
+  int priority = 0;
+
+  _DatabaseReferenceSetPriorityParams() : super(kVersions.last.size);
+
+  static _DatabaseReferenceSetPriorityParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static _DatabaseReferenceSetPriorityParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    _DatabaseReferenceSetPriorityParams result = new _DatabaseReferenceSetPriorityParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      result.path = decoder0.decodeString(8, false);
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      result.priority = decoder0.decodeInt32(16);
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    var encoder0 = encoder.getStructEncoderAtOffset(kVersions.last);
+    try {
+      encoder0.encodeString(path, 8, false);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "path of struct _DatabaseReferenceSetPriorityParams: $e";
+      rethrow;
+    }
+    try {
+      encoder0.encodeInt32(priority, 16);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "priority of struct _DatabaseReferenceSetPriorityParams: $e";
+      rethrow;
+    }
+  }
+
+  String toString() {
+    return "_DatabaseReferenceSetPriorityParams("
+           "path: $path" ", "
+           "priority: $priority" ")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    map["path"] = path;
+    map["priority"] = priority;
+    return map;
+  }
+}
+
+
+class DatabaseReferenceSetPriorityResponseParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(16, 0)
+  ];
+  Error error = null;
+
+  DatabaseReferenceSetPriorityResponseParams() : super(kVersions.last.size);
+
+  static DatabaseReferenceSetPriorityResponseParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static DatabaseReferenceSetPriorityResponseParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    DatabaseReferenceSetPriorityResponseParams result = new DatabaseReferenceSetPriorityResponseParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      var decoder1 = decoder0.decodePointer(8, true);
+      result.error = Error.decode(decoder1);
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    var encoder0 = encoder.getStructEncoderAtOffset(kVersions.last);
+    try {
+      encoder0.encodeStruct(error, 8, true);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "error of struct DatabaseReferenceSetPriorityResponseParams: $e";
+      rethrow;
+    }
+  }
+
+  String toString() {
+    return "DatabaseReferenceSetPriorityResponseParams("
+           "error: $error" ")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    map["error"] = error;
     return map;
   }
 }
@@ -2233,7 +2537,9 @@ const int _databaseReferenceMethodAddValueEventListenerName = 0;
 const int _databaseReferenceMethodAddChildEventListenerName = 1;
 const int _databaseReferenceMethodObserveSingleEventOfTypeName = 2;
 const int _databaseReferenceMethodSetValueName = 3;
-const int _databaseReferenceMethodPushName = 4;
+const int _databaseReferenceMethodRemoveValueName = 4;
+const int _databaseReferenceMethodPushName = 5;
+const int _databaseReferenceMethodSetPriorityName = 6;
 
 class _DatabaseReferenceServiceDescription implements service_describer.ServiceDescription {
   dynamic getTopLevelInterface([Function responseFactory]) =>
@@ -2252,7 +2558,9 @@ abstract class DatabaseReference {
   void addChildEventListener(String path, Object listener);
   dynamic observeSingleEventOfType(String path,EventType eventType,[Function responseFactory = null]);
   dynamic setValue(String path,String jsonValue,int priority,bool hasPriority,[Function responseFactory = null]);
+  dynamic removeValue(String path,[Function responseFactory = null]);
   dynamic push(String path,Object child,[Function responseFactory = null]);
+  dynamic setPriority(String path,int priority,[Function responseFactory = null]);
 }
 
 
@@ -2316,8 +2624,48 @@ class _DatabaseReferenceProxyImpl extends bindings.Proxy {
         }
         c.complete(r);
         break;
+      case _databaseReferenceMethodRemoveValueName:
+        var r = DatabaseReferenceRemoveValueResponseParams.deserialize(
+            message.payload);
+        if (!message.header.hasRequestId) {
+          proxyError("Expected a message with a valid request Id.");
+          return;
+        }
+        Completer c = completerMap[message.header.requestId];
+        if (c == null) {
+          proxyError(
+              "Message had unknown request Id: ${message.header.requestId}");
+          return;
+        }
+        completerMap.remove(message.header.requestId);
+        if (c.isCompleted) {
+          proxyError("Response completer already completed");
+          return;
+        }
+        c.complete(r);
+        break;
       case _databaseReferenceMethodPushName:
         var r = DatabaseReferencePushResponseParams.deserialize(
+            message.payload);
+        if (!message.header.hasRequestId) {
+          proxyError("Expected a message with a valid request Id.");
+          return;
+        }
+        Completer c = completerMap[message.header.requestId];
+        if (c == null) {
+          proxyError(
+              "Message had unknown request Id: ${message.header.requestId}");
+          return;
+        }
+        completerMap.remove(message.header.requestId);
+        if (c.isCompleted) {
+          proxyError("Response completer already completed");
+          return;
+        }
+        c.complete(r);
+        break;
+      case _databaseReferenceMethodSetPriorityName:
+        var r = DatabaseReferenceSetPriorityResponseParams.deserialize(
             message.payload);
         if (!message.header.hasRequestId) {
           proxyError("Expected a message with a valid request Id.");
@@ -2396,6 +2744,15 @@ class _DatabaseReferenceProxyCalls implements DatabaseReference {
           -1,
           bindings.MessageHeader.kMessageExpectsResponse);
     }
+    dynamic removeValue(String path,[Function responseFactory = null]) {
+      var params = new _DatabaseReferenceRemoveValueParams();
+      params.path = path;
+      return _proxyImpl.sendMessageWithRequestId(
+          params,
+          _databaseReferenceMethodRemoveValueName,
+          -1,
+          bindings.MessageHeader.kMessageExpectsResponse);
+    }
     dynamic push(String path,Object child,[Function responseFactory = null]) {
       var params = new _DatabaseReferencePushParams();
       params.path = path;
@@ -2403,6 +2760,16 @@ class _DatabaseReferenceProxyCalls implements DatabaseReference {
       return _proxyImpl.sendMessageWithRequestId(
           params,
           _databaseReferenceMethodPushName,
+          -1,
+          bindings.MessageHeader.kMessageExpectsResponse);
+    }
+    dynamic setPriority(String path,int priority,[Function responseFactory = null]) {
+      var params = new _DatabaseReferenceSetPriorityParams();
+      params.path = path;
+      params.priority = priority;
+      return _proxyImpl.sendMessageWithRequestId(
+          params,
+          _databaseReferenceMethodSetPriorityName,
           -1,
           bindings.MessageHeader.kMessageExpectsResponse);
     }
@@ -2497,9 +2864,19 @@ class DatabaseReferenceStub extends bindings.Stub {
     result.error = error;
     return result;
   }
+  DatabaseReferenceRemoveValueResponseParams _databaseReferenceRemoveValueResponseParamsFactory(Error error) {
+    var result = new DatabaseReferenceRemoveValueResponseParams();
+    result.error = error;
+    return result;
+  }
   DatabaseReferencePushResponseParams _databaseReferencePushResponseParamsFactory(String key) {
     var result = new DatabaseReferencePushResponseParams();
     result.key = key;
+    return result;
+  }
+  DatabaseReferenceSetPriorityResponseParams _databaseReferenceSetPriorityResponseParamsFactory(Error error) {
+    var result = new DatabaseReferenceSetPriorityResponseParams();
+    result.error = error;
     return result;
   }
 
@@ -2565,6 +2942,28 @@ class DatabaseReferenceStub extends bindings.Stub {
               bindings.MessageHeader.kMessageIsResponse);
         }
         break;
+      case _databaseReferenceMethodRemoveValueName:
+        var params = _DatabaseReferenceRemoveValueParams.deserialize(
+            message.payload);
+        var response = _impl.removeValue(params.path,_databaseReferenceRemoveValueResponseParamsFactory);
+        if (response is Future) {
+          return response.then((response) {
+            if (response != null) {
+              return buildResponseWithId(
+                  response,
+                  _databaseReferenceMethodRemoveValueName,
+                  message.header.requestId,
+                  bindings.MessageHeader.kMessageIsResponse);
+            }
+          });
+        } else if (response != null) {
+          return buildResponseWithId(
+              response,
+              _databaseReferenceMethodRemoveValueName,
+              message.header.requestId,
+              bindings.MessageHeader.kMessageIsResponse);
+        }
+        break;
       case _databaseReferenceMethodPushName:
         var params = _DatabaseReferencePushParams.deserialize(
             message.payload);
@@ -2583,6 +2982,28 @@ class DatabaseReferenceStub extends bindings.Stub {
           return buildResponseWithId(
               response,
               _databaseReferenceMethodPushName,
+              message.header.requestId,
+              bindings.MessageHeader.kMessageIsResponse);
+        }
+        break;
+      case _databaseReferenceMethodSetPriorityName:
+        var params = _DatabaseReferenceSetPriorityParams.deserialize(
+            message.payload);
+        var response = _impl.setPriority(params.path,params.priority,_databaseReferenceSetPriorityResponseParamsFactory);
+        if (response is Future) {
+          return response.then((response) {
+            if (response != null) {
+              return buildResponseWithId(
+                  response,
+                  _databaseReferenceMethodSetPriorityName,
+                  message.header.requestId,
+                  bindings.MessageHeader.kMessageIsResponse);
+            }
+          });
+        } else if (response != null) {
+          return buildResponseWithId(
+              response,
+              _databaseReferenceMethodSetPriorityName,
               message.header.requestId,
               bindings.MessageHeader.kMessageIsResponse);
         }
