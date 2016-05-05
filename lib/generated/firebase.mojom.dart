@@ -255,21 +255,19 @@ class Error extends bindings.Struct {
 }
 
 
-class AuthData extends bindings.Struct {
+class User extends bindings.Struct {
   static const List<bindings.StructDataHeader> kVersions = const [
-    const bindings.StructDataHeader(64, 0)
+    const bindings.StructDataHeader(48, 0)
   ];
-  String refreshToken = null;
-  String provider = null;
   String providerId = null;
   String uid = null;
   String displayName = null;
   String photoUrl = null;
   String email = null;
 
-  AuthData() : super(kVersions.last.size);
+  User() : super(kVersions.last.size);
 
-  static AuthData deserialize(bindings.Message message) {
+  static User deserialize(bindings.Message message) {
     var decoder = new bindings.Decoder(message);
     var result = decode(decoder);
     if (decoder.excessHandles != null) {
@@ -278,11 +276,11 @@ class AuthData extends bindings.Struct {
     return result;
   }
 
-  static AuthData decode(bindings.Decoder decoder0) {
+  static User decode(bindings.Decoder decoder0) {
     if (decoder0 == null) {
       return null;
     }
-    AuthData result = new AuthData();
+    User result = new User();
 
     var mainDataHeader = decoder0.decodeStructDataHeader();
     if (mainDataHeader.version <= kVersions.last.version) {
@@ -304,31 +302,23 @@ class AuthData extends bindings.Struct {
     }
     if (mainDataHeader.version >= 0) {
       
-      result.refreshToken = decoder0.decodeString(8, false);
+      result.providerId = decoder0.decodeString(8, false);
     }
     if (mainDataHeader.version >= 0) {
       
-      result.provider = decoder0.decodeString(16, false);
+      result.uid = decoder0.decodeString(16, false);
     }
     if (mainDataHeader.version >= 0) {
       
-      result.providerId = decoder0.decodeString(24, false);
+      result.displayName = decoder0.decodeString(24, false);
     }
     if (mainDataHeader.version >= 0) {
       
-      result.uid = decoder0.decodeString(32, false);
+      result.photoUrl = decoder0.decodeString(32, false);
     }
     if (mainDataHeader.version >= 0) {
       
-      result.displayName = decoder0.decodeString(40, false);
-    }
-    if (mainDataHeader.version >= 0) {
-      
-      result.photoUrl = decoder0.decodeString(48, false);
-    }
-    if (mainDataHeader.version >= 0) {
-      
-      result.email = decoder0.decodeString(56, false);
+      result.email = decoder0.decodeString(40, false);
     }
     return result;
   }
@@ -336,60 +326,44 @@ class AuthData extends bindings.Struct {
   void encode(bindings.Encoder encoder) {
     var encoder0 = encoder.getStructEncoderAtOffset(kVersions.last);
     try {
-      encoder0.encodeString(refreshToken, 8, false);
+      encoder0.encodeString(providerId, 8, false);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
-          "refreshToken of struct AuthData: $e";
+          "providerId of struct User: $e";
       rethrow;
     }
     try {
-      encoder0.encodeString(provider, 16, false);
+      encoder0.encodeString(uid, 16, false);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
-          "provider of struct AuthData: $e";
+          "uid of struct User: $e";
       rethrow;
     }
     try {
-      encoder0.encodeString(providerId, 24, false);
+      encoder0.encodeString(displayName, 24, false);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
-          "providerId of struct AuthData: $e";
+          "displayName of struct User: $e";
       rethrow;
     }
     try {
-      encoder0.encodeString(uid, 32, false);
+      encoder0.encodeString(photoUrl, 32, false);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
-          "uid of struct AuthData: $e";
+          "photoUrl of struct User: $e";
       rethrow;
     }
     try {
-      encoder0.encodeString(displayName, 40, false);
+      encoder0.encodeString(email, 40, false);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
-          "displayName of struct AuthData: $e";
-      rethrow;
-    }
-    try {
-      encoder0.encodeString(photoUrl, 48, false);
-    } on bindings.MojoCodecError catch(e) {
-      e.message = "Error encountered while encoding field "
-          "photoUrl of struct AuthData: $e";
-      rethrow;
-    }
-    try {
-      encoder0.encodeString(email, 56, false);
-    } on bindings.MojoCodecError catch(e) {
-      e.message = "Error encountered while encoding field "
-          "email of struct AuthData: $e";
+          "email of struct User: $e";
       rethrow;
     }
   }
 
   String toString() {
-    return "AuthData("
-           "refreshToken: $refreshToken" ", "
-           "provider: $provider" ", "
+    return "User("
            "providerId: $providerId" ", "
            "uid: $uid" ", "
            "displayName: $displayName" ", "
@@ -399,8 +373,6 @@ class AuthData extends bindings.Struct {
 
   Map toJson() {
     Map map = new Map();
-    map["refreshToken"] = refreshToken;
-    map["provider"] = provider;
     map["providerId"] = providerId;
     map["uid"] = uid;
     map["displayName"] = displayName;
@@ -2070,6 +2042,283 @@ class _FirebaseReferenceParams extends bindings.Struct {
   }
 }
 
+
+class _FirebaseSignInAnonymouslyParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(8, 0)
+  ];
+
+  _FirebaseSignInAnonymouslyParams() : super(kVersions.last.size);
+
+  static _FirebaseSignInAnonymouslyParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static _FirebaseSignInAnonymouslyParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    _FirebaseSignInAnonymouslyParams result = new _FirebaseSignInAnonymouslyParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    encoder.getStructEncoderAtOffset(kVersions.last);
+  }
+
+  String toString() {
+    return "_FirebaseSignInAnonymouslyParams("")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    return map;
+  }
+}
+
+
+class FirebaseSignInAnonymouslyResponseParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(24, 0)
+  ];
+  User user = null;
+  Error error = null;
+
+  FirebaseSignInAnonymouslyResponseParams() : super(kVersions.last.size);
+
+  static FirebaseSignInAnonymouslyResponseParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static FirebaseSignInAnonymouslyResponseParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    FirebaseSignInAnonymouslyResponseParams result = new FirebaseSignInAnonymouslyResponseParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      var decoder1 = decoder0.decodePointer(8, true);
+      result.user = User.decode(decoder1);
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      var decoder1 = decoder0.decodePointer(16, true);
+      result.error = Error.decode(decoder1);
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    var encoder0 = encoder.getStructEncoderAtOffset(kVersions.last);
+    try {
+      encoder0.encodeStruct(user, 8, true);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "user of struct FirebaseSignInAnonymouslyResponseParams: $e";
+      rethrow;
+    }
+    try {
+      encoder0.encodeStruct(error, 16, true);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "error of struct FirebaseSignInAnonymouslyResponseParams: $e";
+      rethrow;
+    }
+  }
+
+  String toString() {
+    return "FirebaseSignInAnonymouslyResponseParams("
+           "user: $user" ", "
+           "error: $error" ")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    map["user"] = user;
+    map["error"] = error;
+    return map;
+  }
+}
+
+
+class _FirebaseSignOutParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(8, 0)
+  ];
+
+  _FirebaseSignOutParams() : super(kVersions.last.size);
+
+  static _FirebaseSignOutParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static _FirebaseSignOutParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    _FirebaseSignOutParams result = new _FirebaseSignOutParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    encoder.getStructEncoderAtOffset(kVersions.last);
+  }
+
+  String toString() {
+    return "_FirebaseSignOutParams("")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    return map;
+  }
+}
+
+
+class FirebaseSignOutResponseParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(16, 0)
+  ];
+  Error error = null;
+
+  FirebaseSignOutResponseParams() : super(kVersions.last.size);
+
+  static FirebaseSignOutResponseParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static FirebaseSignOutResponseParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    FirebaseSignOutResponseParams result = new FirebaseSignOutResponseParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      var decoder1 = decoder0.decodePointer(8, true);
+      result.error = Error.decode(decoder1);
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    var encoder0 = encoder.getStructEncoderAtOffset(kVersions.last);
+    try {
+      encoder0.encodeStruct(error, 8, true);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "error of struct FirebaseSignOutResponseParams: $e";
+      rethrow;
+    }
+  }
+
+  String toString() {
+    return "FirebaseSignOutResponseParams("
+           "error: $error" ")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    map["error"] = error;
+    return map;
+  }
+}
+
 const int _valueEventListenerMethodOnCancelledName = 0;
 const int _valueEventListenerMethodOnDataChangeName = 1;
 
@@ -3039,6 +3288,8 @@ class DatabaseReferenceStub extends bindings.Stub {
 
 const int _firebaseMethodConfigureName = 0;
 const int _firebaseMethodReferenceName = 1;
+const int _firebaseMethodSignInAnonymouslyName = 2;
+const int _firebaseMethodSignOutName = 3;
 
 class _FirebaseServiceDescription implements service_describer.ServiceDescription {
   dynamic getTopLevelInterface([Function responseFactory]) =>
@@ -3055,6 +3306,8 @@ abstract class Firebase {
   static const String serviceName = "firebase::Firebase";
   void configure();
   void reference(Object result);
+  dynamic signInAnonymously([Function responseFactory = null]);
+  dynamic signOut([Function responseFactory = null]);
 }
 
 
@@ -3078,6 +3331,46 @@ class _FirebaseProxyImpl extends bindings.Proxy {
 
   void handleResponse(bindings.ServiceMessage message) {
     switch (message.header.type) {
+      case _firebaseMethodSignInAnonymouslyName:
+        var r = FirebaseSignInAnonymouslyResponseParams.deserialize(
+            message.payload);
+        if (!message.header.hasRequestId) {
+          proxyError("Expected a message with a valid request Id.");
+          return;
+        }
+        Completer c = completerMap[message.header.requestId];
+        if (c == null) {
+          proxyError(
+              "Message had unknown request Id: ${message.header.requestId}");
+          return;
+        }
+        completerMap.remove(message.header.requestId);
+        if (c.isCompleted) {
+          proxyError("Response completer already completed");
+          return;
+        }
+        c.complete(r);
+        break;
+      case _firebaseMethodSignOutName:
+        var r = FirebaseSignOutResponseParams.deserialize(
+            message.payload);
+        if (!message.header.hasRequestId) {
+          proxyError("Expected a message with a valid request Id.");
+          return;
+        }
+        Completer c = completerMap[message.header.requestId];
+        if (c == null) {
+          proxyError(
+              "Message had unknown request Id: ${message.header.requestId}");
+          return;
+        }
+        completerMap.remove(message.header.requestId);
+        if (c.isCompleted) {
+          proxyError("Response completer already completed");
+          return;
+        }
+        c.complete(r);
+        break;
       default:
         proxyError("Unexpected message type: ${message.header.type}");
         close(immediate: true);
@@ -3112,6 +3405,22 @@ class _FirebaseProxyCalls implements Firebase {
       var params = new _FirebaseReferenceParams();
       params.result = result;
       _proxyImpl.sendMessage(params, _firebaseMethodReferenceName);
+    }
+    dynamic signInAnonymously([Function responseFactory = null]) {
+      var params = new _FirebaseSignInAnonymouslyParams();
+      return _proxyImpl.sendMessageWithRequestId(
+          params,
+          _firebaseMethodSignInAnonymouslyName,
+          -1,
+          bindings.MessageHeader.kMessageExpectsResponse);
+    }
+    dynamic signOut([Function responseFactory = null]) {
+      var params = new _FirebaseSignOutParams();
+      return _proxyImpl.sendMessageWithRequestId(
+          params,
+          _firebaseMethodSignOutName,
+          -1,
+          bindings.MessageHeader.kMessageExpectsResponse);
     }
 }
 
@@ -3194,6 +3503,17 @@ class FirebaseStub extends bindings.Stub {
   }
 
 
+  FirebaseSignInAnonymouslyResponseParams _firebaseSignInAnonymouslyResponseParamsFactory(User user, Error error) {
+    var result = new FirebaseSignInAnonymouslyResponseParams();
+    result.user = user;
+    result.error = error;
+    return result;
+  }
+  FirebaseSignOutResponseParams _firebaseSignOutResponseParamsFactory(Error error) {
+    var result = new FirebaseSignOutResponseParams();
+    result.error = error;
+    return result;
+  }
 
   dynamic handleMessage(bindings.ServiceMessage message) {
     if (bindings.ControlMessageHandler.isControlMessage(message)) {
@@ -3210,6 +3530,46 @@ class FirebaseStub extends bindings.Stub {
         var params = _FirebaseReferenceParams.deserialize(
             message.payload);
         _impl.reference(params.result);
+        break;
+      case _firebaseMethodSignInAnonymouslyName:
+        var response = _impl.signInAnonymously(_firebaseSignInAnonymouslyResponseParamsFactory);
+        if (response is Future) {
+          return response.then((response) {
+            if (response != null) {
+              return buildResponseWithId(
+                  response,
+                  _firebaseMethodSignInAnonymouslyName,
+                  message.header.requestId,
+                  bindings.MessageHeader.kMessageIsResponse);
+            }
+          });
+        } else if (response != null) {
+          return buildResponseWithId(
+              response,
+              _firebaseMethodSignInAnonymouslyName,
+              message.header.requestId,
+              bindings.MessageHeader.kMessageIsResponse);
+        }
+        break;
+      case _firebaseMethodSignOutName:
+        var response = _impl.signOut(_firebaseSignOutResponseParamsFactory);
+        if (response is Future) {
+          return response.then((response) {
+            if (response != null) {
+              return buildResponseWithId(
+                  response,
+                  _firebaseMethodSignOutName,
+                  message.header.requestId,
+                  bindings.MessageHeader.kMessageIsResponse);
+            }
+          });
+        } else if (response != null) {
+          return buildResponseWithId(
+              response,
+              _firebaseMethodSignOutName,
+              message.header.requestId,
+              bindings.MessageHeader.kMessageIsResponse);
+        }
         break;
       default:
         throw new bindings.MojoCodecError("Unexpected message name");
