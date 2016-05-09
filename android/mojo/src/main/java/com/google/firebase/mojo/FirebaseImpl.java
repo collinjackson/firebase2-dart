@@ -8,8 +8,12 @@ import android.content.Context;
 import android.util.Log;
 import android.content.res.AssetManager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseError;
 
@@ -19,6 +23,9 @@ import com.google.firebase.database.DatabaseError;
 // import com.firebase.client.Firebase.CompletionListener;
 // import com.firebase.client.Firebase.ResultHandler;
 // import com.firebase.client.Firebase.ValueResultHandler;
+
+import com.google.firebase.mojo.Conversions;
+
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -34,6 +41,7 @@ import org.chromium.mojo.system.Core;
 import org.chromium.mojo.system.MessagePipeHandle;
 import org.chromium.mojo.system.MojoException;
 import org.chromium.mojom.firebase.DataSnapshot;
+import org.chromium.mojom.firebase.DatabaseReference;
 import org.chromium.mojom.firebase.EventType;
 import org.chromium.mojom.firebase.Firebase;
 import org.chromium.mojom.firebase.ValueEventListener;
@@ -42,7 +50,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class FirebaseImpl implements org.chromium.mojom.firebase.Firebase {
+public class FirebaseImpl extends Conversions implements org.chromium.mojom.firebase.Firebase {
     private static final String TAG = "FirebaseImpl";
     static private Context mContext;
 
@@ -50,8 +58,8 @@ public class FirebaseImpl implements org.chromium.mojom.firebase.Firebase {
         mContext = context;
     }
 
-    public static void connectToService(Context context, Core core, MessagePipeHandle pipe) {
-        Firebase.MANAGER.bind(new FirebaseImpl(context), pipe);
+    public static Binding connectToService(Context context, Core core, MessagePipeHandle pipe) {
+        return Firebase.MANAGER.bind(new FirebaseImpl(context), pipe);
     }
 
     @Override
@@ -86,6 +94,31 @@ public class FirebaseImpl implements org.chromium.mojom.firebase.Firebase {
         } catch(JSONException e) {
             Log.e(TAG, "Content of google-services.json was not in the expected format.", e);
         }
+    }
+
+    @Override
+    public void reference(InterfaceRequest<DatabaseReference> request) {
+        DatabaseReferenceImpl impl = new DatabaseReferenceImpl(FirebaseDatabase.getInstance().getReference());
+        DatabaseReferenceImpl.MANAGER.bind(impl, request);
+    }
+
+    // @Override
+    public void signInAnonymously(final SignInAnonymouslyResponse response) {
+        FirebaseAuth.getInstance().signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(Task<AuthResult> task) {
+                if (task.isSuccessful())
+                    response.call(toMojoUser(task.getResult().getUser()), null);
+                else
+                    response.call(null, null); // add error
+            }
+        });
+    }
+
+    // @Override
+    public void signOut(final SignOutResponse response) {
+        FirebaseAuth.getInstance().signOut();
+        response.call(null);
     }
 
     // @Override
