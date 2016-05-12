@@ -217,7 +217,7 @@ class Error extends bindings.Struct {
     }
     if (mainDataHeader.version >= 0) {
       
-      result.message = decoder0.decodeString(16, false);
+      result.message = decoder0.decodeString(16, true);
     }
     return result;
   }
@@ -232,7 +232,7 @@ class Error extends bindings.Struct {
       rethrow;
     }
     try {
-      encoder0.encodeString(message, 16, false);
+      encoder0.encodeString(message, 16, true);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
           "message of struct Error: $e";
@@ -310,15 +310,15 @@ class User extends bindings.Struct {
     }
     if (mainDataHeader.version >= 0) {
       
-      result.displayName = decoder0.decodeString(24, false);
+      result.displayName = decoder0.decodeString(24, true);
     }
     if (mainDataHeader.version >= 0) {
       
-      result.photoUrl = decoder0.decodeString(32, false);
+      result.photoUrl = decoder0.decodeString(32, true);
     }
     if (mainDataHeader.version >= 0) {
       
-      result.email = decoder0.decodeString(40, false);
+      result.email = decoder0.decodeString(40, true);
     }
     return result;
   }
@@ -340,21 +340,21 @@ class User extends bindings.Struct {
       rethrow;
     }
     try {
-      encoder0.encodeString(displayName, 24, false);
+      encoder0.encodeString(displayName, 24, true);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
           "displayName of struct User: $e";
       rethrow;
     }
     try {
-      encoder0.encodeString(photoUrl, 32, false);
+      encoder0.encodeString(photoUrl, 32, true);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
           "photoUrl of struct User: $e";
       rethrow;
     }
     try {
-      encoder0.encodeString(email, 40, false);
+      encoder0.encodeString(email, 40, true);
     } on bindings.MojoCodecError catch(e) {
       e.message = "Error encountered while encoding field "
           "email of struct User: $e";
@@ -2459,14 +2459,19 @@ class ValueEventListenerProxy implements bindings.ProxyBase {
 
 
 class ValueEventListenerStub extends bindings.Stub {
-  ValueEventListener _impl = null;
+  ValueEventListener _impl;
 
   ValueEventListenerStub.fromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint, [this._impl])
-      : super.fromEndpoint(endpoint);
+      core.MojoMessagePipeEndpoint endpoint, [ValueEventListener impl])
+      : super.fromEndpoint(endpoint, autoBegin: impl != null) {
+    _impl = impl;
+  }
 
-  ValueEventListenerStub.fromHandle(core.MojoHandle handle, [this._impl])
-      : super.fromHandle(handle);
+  ValueEventListenerStub.fromHandle(
+      core.MojoHandle handle, [ValueEventListener impl])
+      : super.fromHandle(handle, autoBegin: impl != null) {
+    _impl = impl;
+  }
 
   ValueEventListenerStub.unbound() : super.unbound();
 
@@ -2484,7 +2489,9 @@ class ValueEventListenerStub extends bindings.Stub {
                                                           0,
                                                           message);
     }
-    assert(_impl != null);
+    if (_impl == null) {
+      throw new core.MojoApiError("$this has no implementation set");
+    }
     switch (message.header.type) {
       case _valueEventListenerMethodOnCancelledName:
         var params = _ValueEventListenerOnCancelledParams.deserialize(
@@ -2505,8 +2512,21 @@ class ValueEventListenerStub extends bindings.Stub {
 
   ValueEventListener get impl => _impl;
   set impl(ValueEventListener d) {
-    assert(_impl == null);
+    if (d == null) {
+      throw new core.MojoApiError("$this: Cannot set a null implementation");
+    }
+    if (isBound && (_impl == null)) {
+      beginHandlingEvents();
+    }
     _impl = d;
+  }
+
+  @override
+  void bind(core.MojoMessagePipeEndpoint endpoint) {
+    super.bind(endpoint);
+    if (!isOpen && (_impl != null)) {
+      beginHandlingEvents();
+    }
   }
 
   String toString() {
@@ -2701,14 +2721,19 @@ class ChildEventListenerProxy implements bindings.ProxyBase {
 
 
 class ChildEventListenerStub extends bindings.Stub {
-  ChildEventListener _impl = null;
+  ChildEventListener _impl;
 
   ChildEventListenerStub.fromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint, [this._impl])
-      : super.fromEndpoint(endpoint);
+      core.MojoMessagePipeEndpoint endpoint, [ChildEventListener impl])
+      : super.fromEndpoint(endpoint, autoBegin: impl != null) {
+    _impl = impl;
+  }
 
-  ChildEventListenerStub.fromHandle(core.MojoHandle handle, [this._impl])
-      : super.fromHandle(handle);
+  ChildEventListenerStub.fromHandle(
+      core.MojoHandle handle, [ChildEventListener impl])
+      : super.fromHandle(handle, autoBegin: impl != null) {
+    _impl = impl;
+  }
 
   ChildEventListenerStub.unbound() : super.unbound();
 
@@ -2726,7 +2751,9 @@ class ChildEventListenerStub extends bindings.Stub {
                                                           0,
                                                           message);
     }
-    assert(_impl != null);
+    if (_impl == null) {
+      throw new core.MojoApiError("$this has no implementation set");
+    }
     switch (message.header.type) {
       case _childEventListenerMethodOnCancelledName:
         var params = _ChildEventListenerOnCancelledParams.deserialize(
@@ -2762,8 +2789,21 @@ class ChildEventListenerStub extends bindings.Stub {
 
   ChildEventListener get impl => _impl;
   set impl(ChildEventListener d) {
-    assert(_impl == null);
+    if (d == null) {
+      throw new core.MojoApiError("$this: Cannot set a null implementation");
+    }
+    if (isBound && (_impl == null)) {
+      beginHandlingEvents();
+    }
     _impl = d;
+  }
+
+  @override
+  void bind(core.MojoMessagePipeEndpoint endpoint) {
+    super.bind(endpoint);
+    if (!isOpen && (_impl != null)) {
+      beginHandlingEvents();
+    }
   }
 
   String toString() {
@@ -3085,14 +3125,19 @@ class DatabaseReferenceProxy implements bindings.ProxyBase {
 
 
 class DatabaseReferenceStub extends bindings.Stub {
-  DatabaseReference _impl = null;
+  DatabaseReference _impl;
 
   DatabaseReferenceStub.fromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint, [this._impl])
-      : super.fromEndpoint(endpoint);
+      core.MojoMessagePipeEndpoint endpoint, [DatabaseReference impl])
+      : super.fromEndpoint(endpoint, autoBegin: impl != null) {
+    _impl = impl;
+  }
 
-  DatabaseReferenceStub.fromHandle(core.MojoHandle handle, [this._impl])
-      : super.fromHandle(handle);
+  DatabaseReferenceStub.fromHandle(
+      core.MojoHandle handle, [DatabaseReference impl])
+      : super.fromHandle(handle, autoBegin: impl != null) {
+    _impl = impl;
+  }
 
   DatabaseReferenceStub.unbound() : super.unbound();
 
@@ -3135,7 +3180,9 @@ class DatabaseReferenceStub extends bindings.Stub {
                                                           0,
                                                           message);
     }
-    assert(_impl != null);
+    if (_impl == null) {
+      throw new core.MojoApiError("$this has no implementation set");
+    }
     switch (message.header.type) {
       case _databaseReferenceMethodAddValueEventListenerName:
         var params = _DatabaseReferenceAddValueEventListenerParams.deserialize(
@@ -3266,8 +3313,21 @@ class DatabaseReferenceStub extends bindings.Stub {
 
   DatabaseReference get impl => _impl;
   set impl(DatabaseReference d) {
-    assert(_impl == null);
+    if (d == null) {
+      throw new core.MojoApiError("$this: Cannot set a null implementation");
+    }
+    if (isBound && (_impl == null)) {
+      beginHandlingEvents();
+    }
     _impl = d;
+  }
+
+  @override
+  void bind(core.MojoMessagePipeEndpoint endpoint) {
+    super.bind(endpoint);
+    if (!isOpen && (_impl != null)) {
+      beginHandlingEvents();
+    }
   }
 
   String toString() {
@@ -3485,14 +3545,19 @@ class FirebaseProxy implements bindings.ProxyBase {
 
 
 class FirebaseStub extends bindings.Stub {
-  Firebase _impl = null;
+  Firebase _impl;
 
   FirebaseStub.fromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint, [this._impl])
-      : super.fromEndpoint(endpoint);
+      core.MojoMessagePipeEndpoint endpoint, [Firebase impl])
+      : super.fromEndpoint(endpoint, autoBegin: impl != null) {
+    _impl = impl;
+  }
 
-  FirebaseStub.fromHandle(core.MojoHandle handle, [this._impl])
-      : super.fromHandle(handle);
+  FirebaseStub.fromHandle(
+      core.MojoHandle handle, [Firebase impl])
+      : super.fromHandle(handle, autoBegin: impl != null) {
+    _impl = impl;
+  }
 
   FirebaseStub.unbound() : super.unbound();
 
@@ -3521,7 +3586,9 @@ class FirebaseStub extends bindings.Stub {
                                                           0,
                                                           message);
     }
-    assert(_impl != null);
+    if (_impl == null) {
+      throw new core.MojoApiError("$this has no implementation set");
+    }
     switch (message.header.type) {
       case _firebaseMethodConfigureName:
         _impl.configure();
@@ -3580,8 +3647,21 @@ class FirebaseStub extends bindings.Stub {
 
   Firebase get impl => _impl;
   set impl(Firebase d) {
-    assert(_impl == null);
+    if (d == null) {
+      throw new core.MojoApiError("$this: Cannot set a null implementation");
+    }
+    if (isBound && (_impl == null)) {
+      beginHandlingEvents();
+    }
     _impl = d;
+  }
+
+  @override
+  void bind(core.MojoMessagePipeEndpoint endpoint) {
+    super.bind(endpoint);
+    if (!isOpen && (_impl != null)) {
+      beginHandlingEvents();
+    }
   }
 
   String toString() {

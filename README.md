@@ -30,19 +30,19 @@ Clone this repository into your Flutter engine repository's ```third_party/fireb
 To build for iOS:
 ```
 ./sky/tools/gn --ios --simulator --enable-firebase
-ninja -C out/ios_sim_Debug/
-cp out/ios_sim_Debug/libFirebase.dylib third_party/firebase/lib/generated/ios
-cp out/ios_sim_Debug/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
+ninja -C out/ios_debug_sim/
+cp out/ios_debug_sim/libFirebase.dylib third_party/firebase/lib/generated/ios
+cp out/ios_debug_sim/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
 ```
 
 To build for Android:
 ```
 ./sky/tools/gn --android --enable-firebase
-ninja -C out/android_Debug/
-cp out/android_Debug//gen/third_party/firebase/interfaces_java.jar third_party/firebase/android/mojo/libs
-cp out/android_Debug//gen/mojo/public/java/bindings.jar third_party/firebase/android/mojo/libs
-cp out/android_Debug//gen/mojo/public/java/system.jar third_party/firebase/android/mojo/libs
-cp out/android_Debug/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
+ninja -C out/android_debug/
+cp out/android_debug//gen/third_party/firebase/interfaces_java.jar third_party/firebase/android/mojo/libs
+cp out/android_debug//gen/mojo/public/java/bindings.jar third_party/firebase/android/mojo/libs
+cp out/android_debug//gen/mojo/public/java/system.jar third_party/firebase/android/mojo/libs
+cp out/android_debug/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
 (cd third_party/firebase/android && ./gradlew build)
 cp -r third_party/firebase/android/mojo/build/intermediates/ third_party/firebase/lib/generated/android/ 2>&1 | grep -v 'Permission denied'
 ```

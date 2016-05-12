@@ -20,15 +20,15 @@ struct DataSnapshot {
 
 struct Error {
   int32 code;
-  string message;
+  string? message;
 };
 
 struct User {
   string providerID;
   string uid;
-  string displayName;
-  string photoURL;
-  string email;
+  string? displayName;
+  string? photoURL;
+  string? email;
 };
 
 interface ValueEventListener {
