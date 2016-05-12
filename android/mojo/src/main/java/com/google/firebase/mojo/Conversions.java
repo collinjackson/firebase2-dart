@@ -37,6 +37,15 @@ public class Conversions {
         return mojoError;
     }
 
+    org.chromium.mojom.firebase.Error toMojoException(Throwable exception) {
+        if (exception == null)
+            return null;
+        org.chromium.mojom.firebase.Error mojoException =
+                new org.chromium.mojom.firebase.Error();
+        mojoException.message = exception.getMessage();
+        return mojoException;
+    }
+
     org.chromium.mojom.firebase.User toMojoUser(com.google.firebase.auth.FirebaseUser user) {
         org.chromium.mojom.firebase.User mojoUser =
                 new org.chromium.mojom.firebase.User();
