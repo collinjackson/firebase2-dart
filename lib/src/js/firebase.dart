@@ -13,7 +13,9 @@ import '../firebase.dart';
 import '../transaction_result.dart';
 import '../disconnect.dart';
 
-class FirebaseImpl extends JsFirebase {
+class Firebase extends JsFirebase {
+  factory Firebase(String url) => new JsFirebase(url);
+
   FirebaseImpl(String url) : super(url);
   static final ServerValue = new _ServerValue();
 }

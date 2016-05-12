@@ -1,0 +1,80 @@
+// Copyright 2015 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+[DartPackage="sky_services"]
+module firebase;
+
+enum EventType {
+  EventTypeChildAdded,    // 0, fired when a new child node is added to a location
+  EventTypeChildRemoved,  // 1, fired when a child node is removed from a location
+  EventTypeChildChanged,  // 2, fired when a child node at a location changes
+  EventTypeChildMoved,    // 3, fired when a child node moves relative to the other child nodes at a location
+  EventTypeValue          // 4, fired when any data changes at a location and, recursively, any children
+};
+
+struct DataSnapshot {
+  string key;
+  string jsonValue;
+};
+
+struct Error {
+  int32 code;
+  string? message;
+};
+
+struct User {
+  string providerID;
+  string uid;
+  string? displayName;
+  string? photoURL;
+  string? email;
+};
+
+interface ValueEventListener {
+  OnCancelled(Error error);
+  OnDataChange(DataSnapshot snapshot);
+};
+
+interface ChildEventListener {
+  OnCancelled(Error error);
+  OnChildAdded(DataSnapshot snapshot, string? previousChildName);
+  OnChildChanged(DataSnapshot snapshot, string? previousChildName);
+  OnChildMoved(DataSnapshot snapshot, string? previousChildName);
+  OnChildRemoved(DataSnapshot snapshot);
+};
+
+[ServiceName="firebase::DatabaseReference"]
+interface DatabaseReference {
+  AddValueEventListener(string path, ValueEventListener listener);
+  AddChildEventListener(string path, ChildEventListener listener);
+  ObserveSingleEventOfType(string path, EventType eventType) => (DataSnapshot snapshot);
+  SetValue(string path, string jsonValue, int32 priority, bool hasPriority) => (Error? error);
+  RemoveValue(string path) => (Error? error);
+  Push(string path, DatabaseReference& child) => (string key);
+  SetPriority(string path, int32 priority) => (Error? error);
+};
+
+[ServiceName="firebase::Firebase"]
+interface Firebase {
+  // For now, we can only read configuration data from google-services.json on
+  // Android or GoogleService-Info.plist
+  Configure();
+
+  // Database
+  Reference(DatabaseReference& result);
+  // GoOffline();
+  // GoOnline();
+
+  // Auth
+  SignInAnonymously() => (User? user, Error? error);
+  SignOut() => (Error? error);
+  // AuthWithCustomToken(string token) => (Error? error, AuthData? authData);
+  // // AuthWithOAuthToken(string provider, string credentials) => (Error? error, AuthData? authData);
+  // AuthWithPassword(string email, string password) => (Error? error, AuthData? authData);
+  // // CreateUser(string email, string password) => (Error? error, string? jsonValue);
+  // // // ChangeEmail(string oldEmail, string password, string newEmail) => (Error? error);
+  // ChangePassword(string newPassword, string email, string oldPassword) => (Error? error);
+  // RemoveUser(string email, string password) => (Error? error);
+  //  ResetPassword(string email) => (Error? error);
+};

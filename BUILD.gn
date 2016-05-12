@@ -1,0 +1,127 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//mojo/public/tools/bindings/mojom.gni")
+
+group("firebase") {
+  deps = [
+    ":interfaces",
+  ]
+
+  if (is_ios) {
+    deps += [ ":firebase_lib" ]
+  }
+
+  if (is_android) {
+    deps += [ ":interfaces_java" ]
+  }
+}
+
+mojom("interfaces") {
+  sources = [
+    "mojom/firebase.mojom",
+  ]
+}
+
+if (is_ios) {
+  shared_library("firebase_lib") {
+    output_name = "Firebase"
+    sources = [
+      "mojom/firebase.mojom",
+      "ios/conversions.h",
+      "ios/conversions.mm",
+      "ios/database_reference_impl.h",
+      "ios/database_reference_impl.mm",
+      "ios/firebase_impl.h",
+      "ios/firebase_impl.mm",
+      "//mojo/public/cpp/application/interface_factory.h",
+      "sdk/ios/Headers/Public/FirebaseAnalytics/FIRApp.h",
+      "sdk/ios/Headers/Public/FirebaseAuth/FIRAuth.h",
+      "sdk/ios/Headers/Public/FirebaseDatabase/FIRDatabaseReference.h",
+      "sdk/ios/Headers/Public/FirebaseDatabase/FIRDataEventType.h",
+    ]
+
+    include_dirs = [
+      "sdk/ios/Headers/Public/FirebaseAnalytics",
+      "sdk/ios/Headers/Public/FirebaseAuth",
+      "sdk/ios/Headers/Public/FirebaseDatabase",
+    ]
+
+    libs = [
+      "FirebaseAnalytics.framework",
+      "FirebaseInstanceID.framework",
+      "GoogleMobileAds.framework",
+      "FirebaseRemoteConfig.framework",
+      "FirebaseAuth.framework",
+      "FirebaseStorage.framework",
+      "FirebaseCrashReporting.framework",
+      "FirebaseDatabase.framework",
+      "CFNetwork.framework",
+      "SystemConfiguration.framework",
+      "Security.framework",
+      "icucore",
+      "sqlite3",
+      "z",
+      "AVFoundation.framework",
+      "CoreMedia.framework",
+      "MessageUI.framework",
+      "MediaPlayer.framework",
+      "MobileCoreServices.framework",
+      "AudioToolbox.framework",
+      "EventKit.framework",
+      "AddressBook.framework",
+      "EventKitUI.framework",
+      "GIP_Locale",
+      "GIP_Reachability",
+      "ProtocolBuffers_external",
+      "GTMSessionFetcher_core_external",
+      "GTMSessionFetcher_full_external",
+      "GSDK_Overload_external",
+      "GTMStackTrace_external",
+      "GTM_AddressBook_external",
+      "GTM_DebugUtils_external",
+      "GTM_GTMURLBuilder_external",
+      "GTM_KVO_external",
+      "GTM_NSData+zlib_external",
+      "GTM_NSDictionary+URLArguments_external",
+      "GTM_NSScannerJSON_external",
+      "GTM_NSStringHTML_external",
+      "GTM_NSStringXML_external",
+      "GTM_Regex_external",
+      "GTM_RoundedRectPath_external",
+      "GTM_StringEncoding_external",
+      "GTM_SystemVersion_external",
+      "GTM_UIFont+LineHeight_external",
+      "GTM_core_external",
+      "GTM_iPhone_external",
+    ]
+
+    deps = [
+      "//sky/services/dynamic:sdk_lib",
+      ":interfaces",
+    ]
+
+    cflags_objcc = [
+      "-Wno-nullability-completeness",
+    ]
+
+    ldflags = [
+      "-F" + rebase_path("sdk/ios/FirebaseAnalytics/Frameworks/"),
+      "-F" + rebase_path("sdk/ios/FirebaseInstanceID/Frameworks/"),
+      "-F" + rebase_path("sdk/ios/GoogleMobileAds/Frameworks/"),
+      "-F" + rebase_path("sdk/ios/FirebaseRemoteConfig/Frameworks/"),
+      "-F" + rebase_path("sdk/ios/GoogleNetworkingUtilities/Libraries/"),
+      "-F" + rebase_path("sdk/ios/FirebaseAuth/Frameworks/"),
+      "-F" + rebase_path("sdk/ios/FirebaseStorage/Frameworks/"),
+      "-F" + rebase_path("sdk/ios/FirebaseCrashReporting/Frameworks/"),
+      "-F" + rebase_path("sdk/ios/FirebaseDatabase/Frameworks/"),
+      "-L" + rebase_path("sdk/ios/GoogleInterchangeUtilities/Libraries/"),
+      "-L" + rebase_path("sdk/ios/GoogleUtilities/Libraries/"),
+      "-L" + rebase_path("sdk/ios/GoogleNetworkingUtilities/Libraries/"),
+      "-L" + rebase_path("sdk/ios/GoogleSymbolUtilities/Libraries/"),
+      "-L" + rebase_path("sdk/ios/GoogleIPhoneUtilities/Libraries/"),
+      "-ObjC",
+    ]
+  }
+}

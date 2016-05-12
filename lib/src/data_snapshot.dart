@@ -1,6 +1,6 @@
 library firebase.snapshot;
 
-import 'firebase.dart';
+import 'database.dart';
 
 /**
  * A DataSnapshot contains data from a Firebase location. Any time you read
@@ -67,7 +67,7 @@ abstract class DataSnapshot {
    * Get the Firebase reference for the location that generated this
    * DataSnapshot.
    */
-  Firebase ref();
+  DatabaseReference ref();
 
   /**
    * Get the priority of the data in this DataSnapshot.

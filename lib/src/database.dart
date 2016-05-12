@@ -1,124 +1,37 @@
-library firebase.firebase;
+library firebase.database;
 
 import 'dart:async';
 
-import 'data_snapshot.dart';
-import 'disconnect.dart';
+import 'app.dart';
 import 'event.dart';
-import 'transaction_result.dart';
+import 'data_snapshot.dart';
+import 'flutter/database.dart';
 
-// Once conditional imports work, use dart:ui to determine whether to import
-// the mojo or js implementations
-// import 'js/firebase.dart';
-import 'mojo/firebase.dart';
+abstract class FirebaseDatabase {
+  FirebaseApp get app;
+  static FirebaseDatabase get instance => FirebaseDatabaseImpl.instance;
+}
 
-/**
- * A Firebase represents a particular location in your Firebase and can be used
- * for reading or writing data to that Firebase location.
- */
-abstract class Firebase extends Query {
-  /**
-   * Construct a new Firebase reference from a full Firebase URL.
-   */
-  factory Firebase(String url) => new FirebaseImpl(url);
-
-  /**
-   * Getter for onDisconnect.
-   */
-  Disconnect get onDisconnect;
-
-  /**
-   * Authenticates a Firebase client using a provided Authentication token.
-   * Takes a single token as an argument and returns a Future that will be
-   * resolved when the authentication succeeds (or fails).
-   *
-   * auth in the Firebase JS library has been deprecated. The same behaviour is
-   * now achieved by using authWithCustomToken
-   */
-  @deprecated
-  Future auth(String token);
-
-  /**
-   * Authenticates a Firebase client using an authentication token or Firebase Secret.
-   * Takes a single token as an argument and returns a Future that will be
-   * resolved when the authentication succeeds (or fails).
-   */
-  Future authWithCustomToken(String token);
-
-  /**
-   * Authenticates a Firebase client using a new, temporary guest account.
-   */
-  // https://www.firebase.com/docs/web/guide/login/anonymous.html#section-logging-in
-  Future authAnonymously({remember: 'default'});
-
-  /**
-   * Authenticates a Firebase client using an email / password combination.
-   */
-  Future authWithPassword(Map credentials);
-
-  /**
-   * Authenticates a Firebase client using a third party provider (github, twitter,
-   * google, facebook). This method presents login form with a popup.
-   */
-  Future authWithOAuthPopup(provider, {remember: 'default', scope: ''});
-
-  /**
-   * Authenticates a Firebase client using a third party provider (github, twitter,
-   * google, facebook). This method redirects to a login form, then back to your app.
-   */
-  Future authWithOAuthRedirect(provider, {remember: 'default', scope: ''});
-
-  /**
-   * Authenticates a Firebase client using OAuth access tokens or credentials.
-   */
-  Future authWithOAuthToken(provider, credentials,
-      {remember: 'default', scope: ''});
-
-  /**
-   * Synchronously retrieves the current authentication state of the client.
-   */
-  dynamic getAuth();
-
-  /**
-   * Listens for changes to the client's authentication state.
-   */
-  Stream onAuth([context]);
-
-  /**
-   * Unauthenticates a Firebase client (i.e. logs out).
-   */
-  void unauth();
-
+abstract class DatabaseReference extends Query {
   /**
    * Get a Firebase reference for a location at the specified relative path.
    *
    * The relative path can either be a simple child name, (e.g. 'fred') or a
    * deeper slash separated path (e.g. 'fred/name/first').
    */
-  Firebase child(String path);
+  DatabaseReference child(String path);
 
   /**
    * Get a Firebase reference for the parent location. If this instance refers
    * to the root of your Firebase, it has no parent, and therefore parent()
    * will return null.
    */
-  Firebase parent();
+  DatabaseReference parent();
 
   /**
    * Get a Firebase reference for the root of the Firebase.
    */
-  Firebase root();
-
-  /**
-   * Returns the last token in a Firebase location.
-   * [key] on the root of a Firebase is `null`.
-   */
-  String get key;
-
-  /**
-   * Gets the absolute URL corresponding to this Firebase reference's location.
-   */
-  String toString();
+  DatabaseReference root();
 
   /**
    * Write data to this Firebase location. This will overwrite any data at
@@ -137,15 +50,15 @@ abstract class Firebase extends Query {
    */
   Future set(value);
 
-  /**
-   * Write the enumerated children to this Firebase location. This will only
-   * overwrite the children enumerated in the 'value' parameter and will leave
-   * others untouched.
-   *
-   * The returned Future will be complete when the synchronization has
-   * completed with the Firebase servers.
-   */
-  Future update(Map<String, dynamic> value);
+  // /**
+  //  * Write the enumerated children to this Firebase location. This will only
+  //  * overwrite the children enumerated in the 'value' parameter and will leave
+  //  * others untouched.
+  //  *
+  //  * The returned Future will be complete when the synchronization has
+  //  * completed with the Firebase servers.
+  //  */
+  // Future update(Map<String, dynamic> value);
 
   /**
    * Remove the data at this Firebase location. Any data at child locations
@@ -167,7 +80,7 @@ abstract class Firebase extends Query {
    * The unique name generated by push() is prefixed with a client-generated
    * timestamp so that the resulting list will be chronologically sorted.
    */
-  Firebase push({value, onComplete});
+  DatabaseReference push();
 
   /**
    * Write data to a Firebase location, like set(), but also specify the
@@ -194,55 +107,6 @@ abstract class Firebase extends Query {
    * priority of existing data.
    */
   Future setPriority(int priority);
-
-  /**
-   * Atomically modify the data at this location. Unlike a normal set(), which
-   * just overwrites the data regardless of its previous value, transaction()
-   * is used to modify the existing value to a new value, ensuring there are
-   * no conflicts with other clients writing to the same location at the same
-   * time.
-   *
-   * To accomplish this, you pass [transaction] an update function which is
-   * used to transform the current value into a new value. If another client
-   * writes to the location before your new value is successfully written,
-   * your update function will be called again with the new current value, and
-   * the write will be retried. This will happen repeatedly until your write
-   * succeeds without conflict or you abort the transaction by not returning
-   * a value from your update function.
-   *
-   * The returned [Future] will be completed after the transaction has
-   * finished.
-   */
-  Future<TransactionResult> transaction(update(currentVal),
-      {bool applyLocally: true});
-
-  /**
-   * Creates a new user account using an email / password combination.
-   */
-  Future createUser(Map credentials);
-
-  /**
-   * Updates the email associated with an email / password user account.
-   */
-  Future changeEmail(Map credentials);
-
-  /**
-   * Changes the password of an existing user using an email / password combination.
-   */
-  Future changePassword(Map credentials);
-
-  /**
-   * Removes an existing user account using an email / password combination.
-   */
-  Future removeUser(Map credentials);
-
-  /**
-   * Sends a password-reset email to the owner of the account, containing a
-   * token that may be used to authenticate and change the user's password.
-   */
-  Future resetPassword(Map credentials);
-
-  static get ServerValue => FirebaseImpl.ServerValue;
 }
 
 abstract class Query {
@@ -345,5 +209,5 @@ abstract class Query {
    * Queries are attached to a location in your Firebase. This method will
    * return a Firebase reference to that location.
    */
-  Firebase ref();
+  DatabaseReference ref();
 }
