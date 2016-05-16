@@ -85,7 +85,7 @@ public class FirebaseImpl extends Conversions implements org.chromium.mojom.fire
             String apiKey = client.getJSONArray("api_key").getJSONObject(0).getString("current_key");
             builder.setApiKey(apiKey);
 
-            String applicationId = client.getJSONObject("client_info").getString("android_app_id");
+            String applicationId = client.getJSONObject("client_info").getString("mobilesdk_app_id");
             builder.setApplicationId(applicationId);
             FirebaseApp.initializeApp(mContext, builder.build());
             Log.v(TAG, "Firebase was configured using google-services.json.");
