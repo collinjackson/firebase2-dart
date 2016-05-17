@@ -1,15 +1,15 @@
 A Flutter wrapper for [Firebase](http://firebase.google.com/).
 
-This package currently makes [Firebase Realtime Database](https://firebase.google.com/docs/database/)
-available to Flutter, for both iOS and Android. Further Firebase APIs support
-is planned.
-
+This package exposes the [Firebase SDK](https://firebase.google.com/docs/)
+to Flutter, on both iOS and Android. 
 (Looking for Firebase v1 wrappers for Dart for the web? Check out the original [firebase-dart](https://github.com/firebase/firebase-dart).)
 
 ## Status
 
-This package provides an implementation of the Firebase Realtime Database and Authentication APIs
-used by the Firechat codelab. It does not yet provide wrappers for the other Firebase APIs.
+This package currently provides an implementation of the 
+Realtime Database and Authentication APIs used by the Firechat codelab.
+Support for more APIs is planned. See the [API docs](https://flutter.github.io/firebase-dart) for
+a list of currently supported APIs.
 
 Firebase does not officially support this package. The Flutter
 team maintains this package.
