@@ -4,20 +4,21 @@ This package currently makes [Firebase Realtime Database](https://firebase.googl
 available to Flutter, for both iOS and Android. Further Firebase APIs support
 is planned.
 
-(Looking for Firebase v1 wrappers for Dart for the web? Check out [firebase-dart](https://github.com/firebase/firebase-dart).)
+(Looking for Firebase v1 wrappers for Dart for the web? Check out the original [firebase-dart](https://github.com/firebase/firebase-dart).)
 
 ## Status
 
-This package's support for Firebase Realtime Database API is fairly complete
-for both iOS and Android.
-This package does not yet provide wrappers for the other Firebase APIs.
+This package provides an implementation of the Firebase Realtime Database and Authentication APIs
+used by the Firechat codelab. It does not yet provide wrappers for the other Firebase APIs.
 
 Firebase does not officially support this package. The Flutter
 team maintains this package.
 
 ## Learn more
 
-Check out our API docs, codelab, and example app. (TODO: links.)
+Check out our [API docs](https://flutter.github.io/firebase-dart), 
+[codelab](https://codelabs.developers.google.com/codelabs/flutter/), and
+[example app](https://github.com/flutter/firechat-flutter/).
 
 Here are some snippets to give you a flavor of the API:
 
