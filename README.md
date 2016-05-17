@@ -12,6 +12,9 @@ This package's support for Firebase Realtime Database API is fairly complete
 for both iOS and Android.
 This package does not yet provide wrappers for the other Firebase APIs.
 
+Firebase does not officially support this package. The Flutter
+team maintains this package.
+
 ## Learn more
 
 Check out our API docs, codelab, and example app. (TODO: links.)
