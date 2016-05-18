@@ -27,12 +27,12 @@ class _FlutterFirebaseDatabase extends FirebaseDatabaseImpl {
   final FirebaseAppImpl app;
   final mojom.DatabaseReferenceProxy proxy;
 
-  /**
-   * Queries are attached to a location in your Firebase. This method will
-   * return a Firebase reference to that location.
-   */
-  DatabaseReference reference() {
-    return new _FlutterDatabaseReference(this, <String>[]);
+  DatabaseReference reference([ String path ]) {
+    DatabaseReference root = new _FlutterDatabaseReference(this, <String>[]);
+    if (path != null)
+      return root.child(path);
+    else
+      return root;
   }
 }
 

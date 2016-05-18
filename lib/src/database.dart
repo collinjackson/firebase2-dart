@@ -8,8 +8,14 @@ import 'data_snapshot.dart';
 import 'flutter/database.dart';
 
 abstract class FirebaseDatabase {
+  /// Firebase app instance that corresponds to this database
   FirebaseApp get app;
+
+  /// Firebase database associated with the default app 
   static FirebaseDatabase get instance => FirebaseDatabaseImpl.instance;
+
+  /// Returns a database reference pointing to the root of the database.
+  DatabaseReference reference([ String path ]);
 }
 
 abstract class DatabaseReference extends Query {
