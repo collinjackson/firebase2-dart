@@ -2,7 +2,7 @@ library firebase.js.snapshot;
 
 import 'dart:convert';
 
-import '../../generated/firebase.mojom.dart' as mojom;
+import '../generated/firebase.mojom.dart' as mojom;
 
 import '../data_snapshot.dart';
 import '../database.dart';

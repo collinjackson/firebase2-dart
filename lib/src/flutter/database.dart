@@ -5,7 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-import '../../generated/firebase.mojom.dart' as mojom;
+import '../generated/firebase.mojom.dart' as mojom;
 import '../database.dart';
 import '../data_snapshot.dart';
 import '../event.dart';
