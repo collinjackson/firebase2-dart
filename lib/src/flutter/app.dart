@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-import '../../generated/firebase.mojom.dart' as mojom;
+import '../generated/firebase.mojom.dart' as mojom;
 import '../app.dart';
 
 abstract class FirebaseAppImpl implements FirebaseApp {

@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
-import '../../generated/firebase.mojom.dart' as mojom;
+import '../generated/firebase.mojom.dart' as mojom;
 import '../auth.dart';
 import 'app.dart';
 import 'conversions.dart';

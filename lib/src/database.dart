@@ -8,8 +8,14 @@ import 'data_snapshot.dart';
 import 'flutter/database.dart';
 
 abstract class FirebaseDatabase {
+  /// Firebase app instance that corresponds to this database
   FirebaseApp get app;
+
+  /// Firebase database associated with the default app 
   static FirebaseDatabase get instance => FirebaseDatabaseImpl.instance;
+
+  /// Returns a database reference pointing to the root of the database.
+  DatabaseReference reference([ String path ]);
 }
 
 abstract class DatabaseReference extends Query {
@@ -49,16 +55,6 @@ abstract class DatabaseReference extends Query {
    * the set() was performed.
    */
   Future set(value);
-
-  // /**
-  //  * Write the enumerated children to this Firebase location. This will only
-  //  * overwrite the children enumerated in the 'value' parameter and will leave
-  //  * others untouched.
-  //  *
-  //  * The returned Future will be complete when the synchronization has
-  //  * completed with the Firebase servers.
-  //  */
-  // Future update(Map<String, dynamic> value);
 
   /**
    * Remove the data at this Firebase location. Any data at child locations
@@ -128,86 +124,4 @@ abstract class Query {
    * listening.
    */
   Future<DataSnapshot> once(String eventType);
-
-  /**
-   * Generates a new Query object ordered by the specified child key.
-   */
-  Query orderByChild(String key);
-
-  /**
-   * Generates a new Query object ordered by key.
-   */
-  Query orderByKey();
-
-  /**
-   * Generates a new Query object ordered by child values.
-   */
-  Query orderByValue();
-
-  /**
-   * Generates a new Query object ordered by priority.
-   */
-  Query orderByPriority();
-
-  /**
-   * Creates a Query with the specified starting point. The generated Query
-   * includes children which match the specified starting point. If no arguments
-   * are provided, the starting point will be the beginning of the data.
-   *
-   * The starting point is inclusive, so children with exactly the specified
-   * priority will be included. Though if the optional name is specified, then
-   * the children that have exactly the specified priority must also have a
-   * name greater than or equal to the specified name.
-   *
-   * startAt() can be combined with endAt() or limitToFirst() or limitToLast()
-   * to create further restrictive queries.
-   */
-  Query startAt({dynamic value, String key});
-
-  /**
-   * Creates a Query with the specified ending point. The generated Query
-   * includes children which match the specified ending point. If no arguments
-   * are provided, the ending point will be the end of the data.
-   *
-   * The ending point is inclusive, so children with exactly the specified
-   * priority will be included. Though if the optional name is specified, then
-   * children that have exactly the specified priority must also have a name
-   * less than or equal to the specified name.
-   *
-   * endAt() can be combined with startAt() or limitToFirst() or limitToLast()
-   * to create further restrictive queries.
-   */
-  Query endAt({dynamic value, String key});
-
-  /**
-   * Creates a Query which includes children which match the specified value.
-   */
-  Query equalTo(value, [key]);
-
-  /**
-   * Generates a new Query object limited to the first certain number of children.
-   */
-  Query limitToFirst(int limit);
-
-  /**
-   * Generates a new Query object limited to the last certain number of children.
-   */
-  Query limitToLast(int limit);
-
-  /**
-   * Generate a Query object limited to the number of specified children. If
-   * combined with startAt, the query will include the specified number of
-   * children after the starting point. If combined with endAt, the query will
-   * include the specified number of children before the ending point. If not
-   * combined with startAt() or endAt(), the query will include the last
-   * specified number of children.
-   */
-  @deprecated
-  Query limit(int limit);
-
-  /**
-   * Queries are attached to a location in your Firebase. This method will
-   * return a Firebase reference to that location.
-   */
-  DatabaseReference ref();
 }

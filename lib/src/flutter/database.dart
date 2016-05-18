@@ -5,7 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-import '../../generated/firebase.mojom.dart' as mojom;
+import '../generated/firebase.mojom.dart' as mojom;
 import '../database.dart';
 import '../data_snapshot.dart';
 import '../event.dart';
@@ -27,12 +27,12 @@ class _FlutterFirebaseDatabase extends FirebaseDatabaseImpl {
   final FirebaseAppImpl app;
   final mojom.DatabaseReferenceProxy proxy;
 
-  /**
-   * Queries are attached to a location in your Firebase. This method will
-   * return a Firebase reference to that location.
-   */
-  DatabaseReference reference() {
-    return new _FlutterDatabaseReference(this, <String>[]);
+  DatabaseReference reference([ String path ]) {
+    DatabaseReference root = new _FlutterDatabaseReference(this, <String>[]);
+    if (path != null)
+      return root.child(path);
+    else
+      return root;
   }
 }
 
@@ -67,9 +67,7 @@ class _FlutterDatabaseReference extends _FlutterQuery implements DatabaseReferen
   String toString() => "$runtimeType($path)";
 
   Future set(value) => setWithPriority(value, null);
-  //
-  // Future update(Map<String, dynamic> value) => null;
-  //
+
   Future remove() {
     Completer completer = new Completer();
     _proxy.ptr
@@ -92,7 +90,7 @@ class _FlutterDatabaseReference extends _FlutterQuery implements DatabaseReferen
     });
     return child;
   }
-  //
+
   Future setWithPriority(value, int priority) {
     Completer completer = new Completer();
     String jsonValue = JSON.encode({ "value": value });
@@ -108,9 +106,6 @@ class _FlutterDatabaseReference extends _FlutterQuery implements DatabaseReferen
       .then(getResultCallback(completer));
     return completer.future;
   }
-
-  // Future<TransactionResult> transaction(update(currentVal),
-  //     {bool applyLocally: true}) => new Future.value(throw new UnimplementedError());
 }
 
 class _ValueEventListener implements mojom.ValueEventListener {
@@ -265,86 +260,4 @@ class _FlutterQuery implements Query {
       (await _proxy.ptr.observeSingleEventOfType(path, mojoEventType)).snapshot;
     return new FlutterDataSnapshot.fromFlutterObject(result);
   }
-
-  /**
-   * Generates a new Query object ordered by the specified child key.
-   */
-  Query orderByChild(String key) => null;
-
-  /**
-   * Generates a new Query object ordered by key.
-   */
-  Query orderByKey() => null;
-
-  /**
-   * Generates a new Query object ordered by child values.
-   */
-  Query orderByValue() => null;
-
-  /**
-   * Generates a new Query object ordered by priority.
-   */
-  Query orderByPriority() => null;
-
-  /**
-   * Creates a Query with the specified starting point. The generated Query
-   * includes children which match the specified starting point. If no arguments
-   * are provided, the starting point will be the beginning of the data.
-   *
-   * The starting point is inclusive, so children with exactly the specified
-   * priority will be included. Though if the optional name is specified, then
-   * the children that have exactly the specified priority must also have a
-   * name greater than or equal to the specified name.
-   *
-   * startAt() can be combined with endAt() or limitToFirst() or limitToLast()
-   * to create further restrictive queries.
-   */
-  Query startAt({dynamic value, String key}) => null;
-
-  /**
-   * Creates a Query with the specified ending point. The generated Query
-   * includes children which match the specified ending point. If no arguments
-   * are provided, the ending point will be the end of the data.
-   *
-   * The ending point is inclusive, so children with exactly the specified
-   * priority will be included. Though if the optional name is specified, then
-   * children that have exactly the specified priority must also have a name
-   * less than or equal to the specified name.
-   *
-   * endAt() can be combined with startAt() or limitToFirst() or limitToLast()
-   * to create further restrictive queries.
-   */
-  Query endAt({dynamic value, String key}) => null;
-
-  /**
-   * Creates a Query which includes children which match the specified value.
-   */
-  Query equalTo(value, [key]) => null;
-
-  /**
-   * Generates a new Query object limited to the first certain number of children.
-   */
-  Query limitToFirst(int limit) => null;
-
-  /**
-   * Generates a new Query object limited to the last certain number of children.
-   */
-  Query limitToLast(int limit) => null;
-
-  /**
-   * Generate a Query object limited to the number of specified children. If
-   * combined with startAt, the query will include the specified number of
-   * children after the starting point. If combined with endAt, the query will
-   * include the specified number of children before the ending point. If not
-   * combined with startAt() or endAt(), the query will include the last
-   * specified number of children.
-   */
-  @deprecated
-  Query limit(int limit) => null;
-
-  /**
-   * Queries are attached to a location in your Firebase. This method will
-   * return a Firebase reference to that location.
-   */
-  DatabaseReference ref() => null;
 }
