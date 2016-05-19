@@ -6,9 +6,12 @@ to Flutter, on both iOS and Android.
 
 ## Status
 
-This package currently provides an implementation of the 
+This package currently provides an in-progress implementation of the 
 Realtime Database and Authentication APIs used by the Firechat codelab.
-Support for more APIs is planned. See the [API docs](https://flutter.github.io/firebase-dart) for
+This package does not yet support transactions and querying.
+
+Support for more APIs is planned.
+See the [API docs](https://flutter.github.io/firebase-dart) for
 a list of currently supported APIs.
 
 Firebase does not officially support this package. The Flutter
