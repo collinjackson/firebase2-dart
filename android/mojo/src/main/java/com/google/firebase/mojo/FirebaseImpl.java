@@ -51,7 +51,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FirebaseImpl extends Conversions implements org.chromium.mojom.firebase.Firebase {
-    private static final String TAG = "FirebaseImpl";
+    private static final String TAG = "FlutterFirebase";
     static private Context mContext;
 
     public FirebaseImpl(Context context) {
