@@ -1,4 +1,7 @@
-A Flutter wrapper for [Firebase](http://firebase.google.com/).
+# Firebase for Flutter
+
+_This library is a work in progress, and is not officially supported
+by the Firebase team._
 
 This package exposes the [Firebase SDK](https://firebase.google.com/docs/)
 to Flutter, on both iOS and Android. 
@@ -13,9 +16,6 @@ This package does not yet support transactions and querying.
 Support for more APIs is planned.
 See the [API docs](https://flutter.github.io/firebase-dart) for
 a list of currently supported APIs.
-
-Firebase does not officially support this package. The Flutter
-team maintains this package.
 
 ## Learn more
 
