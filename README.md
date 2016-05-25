@@ -30,8 +30,10 @@ Clone this repository into your Flutter engine repository's ```third_party/fireb
 To build for iOS:
 ```
 ./sky/tools/gn --ios --simulator --enable-firebase
-ninja -C out/ios_debug_sim/
-cp out/ios_debug_sim/libFirebase.dylib third_party/firebase/lib/generated/ios
+ninja -C out/ios_debug_sim/ third_party/firebase
+./sky/tools/gn --ios --enable-firebase --runtime-mode release
+ninja -C out/ios_release/ third_party/firebase
+lipo out/ios_debug_sim/libFirebase.dylib out/ios_release/libFirebase.dylib -create -output third_party/firebase/lib/generated/ios/libFirebase.dylib 
 cp out/ios_debug_sim/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
 ```
 

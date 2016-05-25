@@ -162,7 +162,7 @@ void FlutterServicePerform(mojo::ScopedMessagePipeHandle client_handle,
                            const mojo::String& service_name) {
   if (service_name == firebase::Firebase::Name_) {
     new firebase::FirebaseImpl(
-        mojo::MakeRequest<firebase::Firebase>(client_handle.Pass()));
+        mojo::InterfaceRequest<firebase::Firebase>(client_handle.Pass()));
     return;
   }
 }
