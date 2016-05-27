@@ -56,6 +56,7 @@ class FirebaseImpl : public ::firebase::Firebase {
   //   const RemoveUserCallback& callback) override;
   // void ResetPassword(const mojo::String& email,
   //   const ResetPasswordCallback& callback) override;
+  void LogCrash(const mojo::String& message) override;
  private:
   mojo::StrongBinding<::firebase::Firebase> binding_;
   std::vector<::firebase::ValueEventListenerPtr> value_event_listeners_;

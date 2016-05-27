@@ -77,4 +77,7 @@ interface Firebase {
   // ChangePassword(string newPassword, string email, string oldPassword) => (Error? error);
   // RemoveUser(string email, string password) => (Error? error);
   //  ResetPassword(string email) => (Error? error);
+
+  // CrashReporting
+  LogCrash(string message);
 };

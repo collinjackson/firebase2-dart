@@ -10,6 +10,7 @@
 #import <FirebaseAnalytics/FIROptions.h>
 #import <FirebaseAuth/FIRAuth.h>
 #import <FirebaseDatabase/FIRDatabase.h>
+#import <FirebaseCrash/FirebaseCrash.h>
 
 namespace firebase {
 
@@ -155,6 +156,10 @@ void FirebaseImpl::ResetPassword(const mojo::String& email,
   }];
 }
 */
+
+void FirebaseImpl::LogCrash(const mojo::String& message) {
+  FIRCrashLog(@"%s", message.data());
+}
 
 }  // namespace firebase
 

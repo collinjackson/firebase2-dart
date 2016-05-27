@@ -2319,6 +2319,78 @@ class FirebaseSignOutResponseParams extends bindings.Struct {
   }
 }
 
+
+class _FirebaseLogCrashParams extends bindings.Struct {
+  static const List<bindings.StructDataHeader> kVersions = const [
+    const bindings.StructDataHeader(16, 0)
+  ];
+  String message = null;
+
+  _FirebaseLogCrashParams() : super(kVersions.last.size);
+
+  static _FirebaseLogCrashParams deserialize(bindings.Message message) {
+    var decoder = new bindings.Decoder(message);
+    var result = decode(decoder);
+    if (decoder.excessHandles != null) {
+      decoder.excessHandles.forEach((h) => h.close());
+    }
+    return result;
+  }
+
+  static _FirebaseLogCrashParams decode(bindings.Decoder decoder0) {
+    if (decoder0 == null) {
+      return null;
+    }
+    _FirebaseLogCrashParams result = new _FirebaseLogCrashParams();
+
+    var mainDataHeader = decoder0.decodeStructDataHeader();
+    if (mainDataHeader.version <= kVersions.last.version) {
+      // Scan in reverse order to optimize for more recent versions.
+      for (int i = kVersions.length - 1; i >= 0; --i) {
+        if (mainDataHeader.version >= kVersions[i].version) {
+          if (mainDataHeader.size == kVersions[i].size) {
+            // Found a match.
+            break;
+          }
+          throw new bindings.MojoCodecError(
+              'Header size doesn\'t correspond to known version size.');
+        }
+      }
+    } else if (mainDataHeader.size < kVersions.last.size) {
+      throw new bindings.MojoCodecError(
+        'Message newer than the last known version cannot be shorter than '
+        'required by the last known version.');
+    }
+    if (mainDataHeader.version >= 0) {
+      
+      result.message = decoder0.decodeString(8, false);
+    }
+    return result;
+  }
+
+  void encode(bindings.Encoder encoder) {
+    var encoder0 = encoder.getStructEncoderAtOffset(kVersions.last);
+    try {
+      encoder0.encodeString(message, 8, false);
+    } on bindings.MojoCodecError catch(e) {
+      e.message = "Error encountered while encoding field "
+          "message of struct _FirebaseLogCrashParams: $e";
+      rethrow;
+    }
+  }
+
+  String toString() {
+    return "_FirebaseLogCrashParams("
+           "message: $message" ")";
+  }
+
+  Map toJson() {
+    Map map = new Map();
+    map["message"] = message;
+    return map;
+  }
+}
+
 const int _valueEventListenerMethodOnCancelledName = 0;
 const int _valueEventListenerMethodOnDataChangeName = 1;
 
@@ -3350,6 +3422,7 @@ const int _firebaseMethodConfigureName = 0;
 const int _firebaseMethodReferenceName = 1;
 const int _firebaseMethodSignInAnonymouslyName = 2;
 const int _firebaseMethodSignOutName = 3;
+const int _firebaseMethodLogCrashName = 4;
 
 class _FirebaseServiceDescription implements service_describer.ServiceDescription {
   dynamic getTopLevelInterface([Function responseFactory]) =>
@@ -3368,6 +3441,7 @@ abstract class Firebase {
   void reference(Object result);
   dynamic signInAnonymously([Function responseFactory = null]);
   dynamic signOut([Function responseFactory = null]);
+  void logCrash(String message);
 }
 
 
@@ -3481,6 +3555,15 @@ class _FirebaseProxyCalls implements Firebase {
           _firebaseMethodSignOutName,
           -1,
           bindings.MessageHeader.kMessageExpectsResponse);
+    }
+    void logCrash(String message) {
+      if (!_proxyImpl.isBound) {
+        _proxyImpl.proxyError("The Proxy is closed.");
+        return;
+      }
+      var params = new _FirebaseLogCrashParams();
+      params.message = message;
+      _proxyImpl.sendMessage(params, _firebaseMethodLogCrashName);
     }
 }
 
@@ -3637,6 +3720,11 @@ class FirebaseStub extends bindings.Stub {
               message.header.requestId,
               bindings.MessageHeader.kMessageIsResponse);
         }
+        break;
+      case _firebaseMethodLogCrashName:
+        var params = _FirebaseLogCrashParams.deserialize(
+            message.payload);
+        _impl.logCrash(params.message);
         break;
       default:
         throw new bindings.MojoCodecError("Unexpected message name");
