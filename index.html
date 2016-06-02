@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="made with love by dartdoc 0.9.0">
+  <meta name="description" content="firebase API docs, for the Dart programming language.">
+  <title>firebase - Dart API docs</title>
+
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:500,400italic,300,400' type='text/css'>
+  <link rel="stylesheet" href="static-assets/prettify.css">
+  <link rel="stylesheet" href="static-assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="static-assets/styles.css">
+  <link rel="icon" href="static-assets/favicon.png">
+
+  <!-- Do not remove placeholder -->
+  <!-- Header Placeholder -->
+</head>
+
+<body>
+
+<div id="overlay-under-drawer"></div>
+
+<header class="container-fluid" id="title">
+  <nav class="navbar navbar-fixed-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 contents">
+          <ol class="breadcrumbs gt-separated hidden-xs">
+            <li class="self-crumb">firebase</li>
+          </ol>
+          <div class="self-name">firebase</div>
+          <form class="search navbar-right" role="search">
+            <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+          </form>
+        </div> <!-- /col -->
+      </div> <!-- /row -->
+    </div> <!-- /container -->
+  </nav>
+
+  <div class="container masthead">
+    <div class="row">
+      <div class="col-sm-12 contents">
+        <ol class="breadcrumbs gt-separated visible-xs">
+        </ol>
+        <div class="title-description">
+          <h1 class="title">
+            <span class="kind">package</span> firebase
+          </h1>
+        </div>
+        <ul class="subnav">
+          <li><a href="index.html#libraries">Libraries</a></li>
+        </ul>
+      </div> <!-- /col -->
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+
+</header>
+
+<div class="container body">
+  <div class="row">
+
+  <div class="col-xs-6 col-sm-3 col-md-2 sidebar sidebar-offcanvas-left">
+    <h5>firebase</h5>
+
+    <ol>
+      <li class="section-title"><a href="index.html#libraries">Libraries</a></li>
+      <li><a href="firebase/firebase-library.html">firebase</a></li>
+    </ol>
+  </div>
+
+  <div class="col-xs-12 col-sm-9 col-md-8 main-content">
+
+      <section class="desc markdown">
+        <h1>Firebase for Flutter</h1>
+<p><em>This library is a work in progress, and is not officially supported
+by the Firebase team.</em></p>
+<p>This package exposes the <a href="https://firebase.google.com/docs/">Firebase SDK</a>
+to Flutter, on both iOS and Android. 
+(Looking for Firebase v1 wrappers for Dart for the web? Check out the original <a href="https://github.com/firebase/firebase-dart">firebase-dart</a>.)</p>
+<h2>Status</h2>
+<p>This package currently provides an in-progress implementation of the 
+Realtime Database and Authentication APIs used by the Firechat codelab.
+This package does not yet support transactions and querying.</p>
+<p>Support for more APIs is planned.
+See the <a href="https://flutter.github.io/firebase-dart">API docs</a> for
+a list of currently supported APIs.</p>
+<h2>Learn more</h2>
+<p>Check out our <a href="https://flutter.github.io/firebase-dart">API docs</a>, 
+<a href="https://codelabs.developers.google.com/codelabs/flutter/">codelab</a>, and
+<a href="https://github.com/flutter/firechat-flutter/">example app</a>.</p>
+<p>Here are some snippets to give you a flavor of the API:</p>
+<pre class="dart prettyprint"><code>// Import the Firebase library:
+import 'package:firebase/firebase.dart';
+
+// Get a reference to the database object:
+var database = FirebaseDatabase.instance.reference();
+
+// Append a message to the end of an array in Firebase Database:
+var message = {
+  'text': value.text,
+};
+database.push().set(message);
+
+// Listen for newly added messages:
+database.onChildAdded.listen((Event event) {
+  // Do cool stuff.
+});
+</code></pre>
+<h2>License</h2>
+<p>See the <a href="https://github.com/flutter/firebase2-dart/blob/master/LICENSE">LICENSE file</a>.</p>
+      </section>
+      
+    <section class="summary" id="libraries">
+      <h2>Libraries</h2>
+      <dl>
+          <dt id="firebase">
+            <span class="name"><a href="firebase/firebase-library.html">firebase</a></span>
+          </dt>
+          <dd>
+          </dd>
+      </dl>
+    </section>
+
+  </div> <!-- /.main-content -->
+
+  <div class="col-xs-6 col-sm-6 col-md-2 sidebar sidebar-offcanvas-right">
+
+  </div><!--/.sidebar-offcanvas-right-->
+
+</div> <!-- row -->
+</div> <!-- container -->
+
+<footer>
+  <div class="container-fluid">
+    <div class="container">
+      <p class="text-center">
+        <span class="no-break">
+          firebase 0.6.5+1
+        </span>
+        &bull;
+        <span class="no-break">
+          <a href="https://www.dartlang.org">
+            <img src="static-assets/favicon.png" alt="Dart" title="Dart" width="16" height="16">
+          </a>
+        </span>
+        &bull;
+        <span class="copyright no-break">
+          <a href="http://creativecommons.org/licenses/by-sa/4.0/">cc license</a>
+        </span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="static-assets/typeahead.bundle.min.js"></script>
+<script src="static-assets/prettify.js"></script>
+<script src="static-assets/script.js"></script>
+<!-- Do not remove placeholder -->
+<!-- Footer Placeholder -->
+
+</body>
+
+</html>
