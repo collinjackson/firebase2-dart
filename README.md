@@ -14,12 +14,12 @@ Realtime Database and Authentication APIs used by the Firechat codelab.
 This package does not yet support transactions and querying.
 
 Support for more APIs is planned.
-See the [API docs](https://flutter.github.io/firebase-dart) for
+See the [API docs](https://flutter.github.io/firebase) for
 a list of currently supported APIs.
 
 ## Learn more
 
-Check out our [API docs](https://flutter.github.io/firebase-dart), 
+Check out our [API docs](https://flutter.github.io/firebase), 
 [codelab](https://codelabs.developers.google.com/codelabs/flutter/), and
 [example app](https://github.com/flutter/firechat-flutter/).
 
@@ -46,4 +46,4 @@ database.onChildAdded.listen((Event event) {
 
 ## License
 
-See the [LICENSE file](https://github.com/flutter/firebase2-dart/blob/master/LICENSE).
+See the [LICENSE file](https://github.com/flutter/firebase/blob/master/LICENSE).
