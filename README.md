@@ -4,12 +4,12 @@ _This library is a work in progress, and is not officially supported
 by the Firebase team._
 
 This package exposes the [Firebase SDK](https://firebase.google.com/docs/)
-to Flutter, on both iOS and Android. 
+to Flutter, on both iOS and Android.
 (Looking for Firebase v1 wrappers for Dart for the web? Check out the original [firebase-dart](https://github.com/firebase/firebase-dart).)
 
 ## Status
 
-This package currently provides an in-progress implementation of the 
+This package currently provides an in-progress implementation of the
 Realtime Database and Authentication APIs used by the Firechat codelab.
 This package does not yet support transactions and querying.
 
@@ -19,7 +19,7 @@ a list of currently supported APIs.
 
 ## Learn more
 
-Check out our [API docs](https://flutter.github.io/firebase), 
+Check out our [API docs](https://flutter.github.io/firebase),
 [codelab](https://codelabs.developers.google.com/codelabs/flutter/), and
 [example app](https://github.com/flutter/firechat-flutter/).
 
@@ -81,11 +81,12 @@ cp out/ios_debug_sim/gen/third_party/firebase/mojom/firebase.mojom.dart third_pa
 To build for Android:
 ```
 ./sky/tools/gn --android --enable-firebase
-ninja -C out/android_debug/
+ninja -C out/android_debug/ third_party/firebase
+mkdir -p third_party/firebase/lib/generated/android
 cp out/android_debug//gen/third_party/firebase/interfaces_java.jar third_party/firebase/android/mojo/libs
 cp out/android_debug//gen/mojo/public/java/bindings.jar third_party/firebase/android/mojo/libs
 cp out/android_debug//gen/mojo/public/java/system.jar third_party/firebase/android/mojo/libs
-cp out/android_debug/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
+cp out/android_debug/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated/
 (cd third_party/firebase/android && ./gradlew build)
 cp -r third_party/firebase/android/mojo/build/intermediates/ third_party/firebase/lib/generated/android/ 2>&1 | grep -v 'Permission denied'
 ```
