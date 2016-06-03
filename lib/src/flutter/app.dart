@@ -10,9 +10,11 @@ abstract class FirebaseAppImpl implements FirebaseApp {
 }
 
 class _FirebaseApp extends FirebaseAppImpl {
-  _FirebaseApp() : _proxy = new mojom.FirebaseProxy.unbound() {
-    shell.connectToService("firebase::Firebase", _proxy);
-    _proxy.ptr.configure();
+  _FirebaseApp() : _proxy = shell.connectToApplicationService(
+    "firebase::Firebase",
+    mojom.Firebase.connectToService
+  )  {
+    _proxy.configure();
   }
 
   final mojom.FirebaseProxy _proxy;

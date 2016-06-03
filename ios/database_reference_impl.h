@@ -6,7 +6,6 @@
 #define SKY_SERVICES_FIREBASE_IOS_FIREBASEIMPL_H_
 
 #include "base/macros.h"
-#include "mojo/public/cpp/application/interface_factory.h"
 #include "mojo/public/cpp/bindings/strong_binding.h"
 #include "third_party/firebase/mojom/firebase.mojom.h"
 

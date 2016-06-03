@@ -6,7 +6,6 @@
 #define IOS_FIREBASEIMPL_H_
 
 #include "base/macros.h"
-#include "mojo/public/cpp/application/interface_factory.h"
 #include "mojo/public/cpp/bindings/strong_binding.h"
 #include "third_party/firebase/mojom/firebase.mojom.h"
 
@@ -63,13 +62,6 @@ class FirebaseImpl : public ::firebase::Firebase {
   std::vector<::firebase::ChildEventListenerPtr> child_event_listeners_;
 
   DISALLOW_COPY_AND_ASSIGN(FirebaseImpl);
-};
-
-class FirebaseFactory
-    : public mojo::InterfaceFactory<::firebase::Firebase> {
- public:
-  void Create(mojo::ApplicationConnection* connection,
-              mojo::InterfaceRequest<::firebase::Firebase> request) override;
 };
 
 }  // namespace firebase

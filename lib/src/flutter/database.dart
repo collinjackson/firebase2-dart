@@ -21,7 +21,7 @@ class _FlutterFirebaseDatabase extends FirebaseDatabaseImpl {
 
   _FlutterFirebaseDatabase(this.app)
     : proxy = new mojom.DatabaseReferenceProxy.unbound() {
-    app.proxy.ptr.reference(proxy);
+    app.proxy.reference(proxy);
   }
 
   final FirebaseAppImpl app;
@@ -70,7 +70,7 @@ class _FlutterDatabaseReference extends _FlutterQuery implements DatabaseReferen
 
   Future remove() {
     Completer completer = new Completer();
-    _proxy.ptr
+    _proxy
       .removeValue(path)
       .then(getResultCallback(completer));
     return completer.future;
@@ -80,7 +80,7 @@ class _FlutterDatabaseReference extends _FlutterQuery implements DatabaseReferen
     _FlutterDatabaseReference child =
       new _FlutterDatabaseReference(database, null);
     child._proxy = new mojom.DatabaseReferenceProxy.unbound();
-    _proxy.ptr.push(path, child._proxy)
+    _proxy.push(path, child._proxy)
       .then((mojom.DatabaseReferencePushResponseParams params) {
       // Once we know the path of the new node, we can dispose
       // of the Mojo object rather than leaking it
@@ -94,14 +94,14 @@ class _FlutterDatabaseReference extends _FlutterQuery implements DatabaseReferen
   Future setWithPriority(value, int priority) {
     Completer completer = new Completer();
     String jsonValue = JSON.encode({ "value": value });
-    _proxy.ptr.setValue(path, jsonValue, priority ?? 0, priority != null)
+    _proxy.setValue(path, jsonValue, priority ?? 0, priority != null)
       .then(getResultCallback(completer));
     return completer.future;
   }
 
   Future setPriority(int priority) {
     Completer completer = new Completer();
-    _proxy.ptr
+    _proxy
       .setPriority(path, priority)
       .then(getResultCallback(completer));
     return completer.future;
@@ -193,10 +193,9 @@ class _FlutterQuery implements Query {
       mojom.ValueEventListenerStub stub;
       StreamController<Event> controller = new StreamController<Event>.broadcast(
         onListen: () {
-          stub = new mojom.ValueEventListenerStub.unbound()..impl = listener;
-          _proxy.ptr.addValueEventListener(path, stub);
+          stub = new mojom.ValueEventListenerStub.unbound(listener);
+          _proxy.addValueEventListener(path, stub);
         },
-        onCancel: () => stub.close(),
         sync: true
       );
       listener = new _ValueEventListener(controller);
@@ -212,11 +211,9 @@ class _FlutterQuery implements Query {
       mojom.ChildEventListenerStub stub;
       StreamController<Event> controller = new StreamController<Event>.broadcast(
         onListen: () {
-          stub = new mojom.ChildEventListenerStub.unbound()
-            ..impl = listener;
-          _proxy.ptr.addChildEventListener(path, stub);
+          stub = new mojom.ChildEventListenerStub.unbound(listener);
+          _proxy.addChildEventListener(path, stub);
         },
-        onCancel: () => stub.close(),
         sync: true
       );
       listener = new _ChildEventListener(controller);
@@ -257,7 +254,7 @@ class _FlutterQuery implements Query {
         return null;
     }
     mojom.DataSnapshot result =
-      (await _proxy.ptr.observeSingleEventOfType(path, mojoEventType)).snapshot;
+      (await _proxy.observeSingleEventOfType(path, mojoEventType)).snapshot;
     return new FlutterDataSnapshot.fromFlutterObject(result);
   }
 }

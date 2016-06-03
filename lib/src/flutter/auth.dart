@@ -23,19 +23,26 @@ class _FirebaseAuth implements FirebaseAuth {
 
   // Future authWithCustomToken(String token) {
   //   Completer completer = new Completer();
-  //   app.proxy.ptr.authWithCustomToken(token).then(_getAuthCallback(completer));
+  //   app.proxy.authWithCustomToken(token).then(_getAuthCallback(completer));
   //   return completer.future;
   // }
 
   Future signInAnonymously() {
     Completer completer = new Completer();
-    app.proxy.ptr.signInAnonymously().then(getUserCallback(completer));
+    // TODO(jackson): should call getUserCallback but it throws an exception
+    // after updating to latest mojo
+    app.proxy.signInAnonymously().then((params) {
+      if (params.error != null)
+        completer.complete(params.user);
+      else
+        completer.completeError(params.error);
+    });
     return completer.future;
   }
 
   // Future authWithPassword(Map credentials) {
   //   Completer completer = new Completer();
-  //   app.proxy.ptr
+  //   app.proxy
   //     .authWithPassword(credentials["email"], credentials["password"])
   //     .then(_getAuthCallback(completer));
   //   return completer.future;
@@ -53,7 +60,7 @@ class _FirebaseAuth implements FirebaseAuth {
   //     {remember: 'default', scope: ''}) {
   //   // The remember and scope arguments are intentionally ignored
   //   Completer completer = new Completer();
-  //   app.proxy.ptr
+  //   app.proxy
   //     .authWithOAuthToken(provider, credentials)
   //     .then(_getAuthCallback(completer));
   //   return completer.future;
@@ -65,7 +72,7 @@ class _FirebaseAuth implements FirebaseAuth {
 
   Future signOut() {
     Completer completer = new Completer();
-    app.proxy.ptr.signOut().then(getUserCallback(completer));
+    app.proxy.signOut().then(getUserCallback(completer));
     return completer.future;
   }
 }
