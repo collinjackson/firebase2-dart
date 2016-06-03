@@ -29,14 +29,7 @@ class _FirebaseAuth implements FirebaseAuth {
 
   Future signInAnonymously() {
     Completer completer = new Completer();
-    // TODO(jackson): should call getUserCallback but it throws an exception
-    // after updating to latest mojo
-    app.proxy.signInAnonymously().then((params) {
-      if (params.error != null)
-        completer.complete(params.user);
-      else
-        completer.completeError(params.error);
-    });
+    app.proxy.signInAnonymously().then(getUserCallback(completer));
     return completer.future;
   }
 
