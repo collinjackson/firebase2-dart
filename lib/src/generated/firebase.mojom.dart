@@ -941,7 +941,7 @@ class _DatabaseReferenceAddValueEventListenerParams extends bindings.Struct {
     const bindings.StructDataHeader(24, 0)
   ];
   String path = null;
-  Object listener = null;
+  ValueEventListenerInterface listener = null;
 
   _DatabaseReferenceAddValueEventListenerParams() : super(kVersions.last.size);
 
@@ -1025,7 +1025,7 @@ class _DatabaseReferenceAddChildEventListenerParams extends bindings.Struct {
     const bindings.StructDataHeader(24, 0)
   ];
   String path = null;
-  Object listener = null;
+  ChildEventListenerInterface listener = null;
 
   _DatabaseReferenceAddChildEventListenerParams() : super(kVersions.last.size);
 
@@ -1604,7 +1604,7 @@ class _DatabaseReferencePushParams extends bindings.Struct {
     const bindings.StructDataHeader(24, 0)
   ];
   String path = null;
-  Object child = null;
+  DatabaseReferenceInterfaceRequest child = null;
 
   _DatabaseReferencePushParams() : super(kVersions.last.size);
 
@@ -1976,7 +1976,7 @@ class _FirebaseReferenceParams extends bindings.Struct {
   static const List<bindings.StructDataHeader> kVersions = const [
     const bindings.StructDataHeader(16, 0)
   ];
-  Object result = null;
+  DatabaseReferenceInterfaceRequest result = null;
 
   _FirebaseReferenceParams() : super(kVersions.last.size);
 
@@ -2407,28 +2407,60 @@ class _ValueEventListenerServiceDescription implements service_describer.Service
 
 abstract class ValueEventListener {
   static const String serviceName = null;
+
+  static service_describer.ServiceDescription _cachedServiceDescription;
+  static service_describer.ServiceDescription get serviceDescription {
+    if (_cachedServiceDescription == null) {
+      _cachedServiceDescription = new _ValueEventListenerServiceDescription();
+    }
+    return _cachedServiceDescription;
+  }
+
+  static ValueEventListenerProxy connectToService(
+      bindings.ServiceConnector s, String url, [String serviceName]) {
+    ValueEventListenerProxy p = new ValueEventListenerProxy.unbound();
+    String name = serviceName ?? ValueEventListener.serviceName;
+    if ((name == null) || name.isEmpty) {
+      throw new core.MojoApiError(
+          "If an interface has no ServiceName, then one must be provided.");
+    }
+    s.connectToService(url, p, name);
+    return p;
+  }
   void onCancelled(Error error);
   void onDataChange(DataSnapshot snapshot);
 }
 
+abstract class ValueEventListenerInterface
+    implements bindings.MojoInterface<ValueEventListener>,
+               ValueEventListener {
+  factory ValueEventListenerInterface([ValueEventListener impl]) =>
+      new ValueEventListenerStub.unbound(impl);
+  factory ValueEventListenerInterface.fromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint,
+      [ValueEventListener impl]) =>
+      new ValueEventListenerStub.fromEndpoint(endpoint, impl);
+}
 
-class _ValueEventListenerProxyImpl extends bindings.Proxy {
-  _ValueEventListenerProxyImpl.fromEndpoint(
+abstract class ValueEventListenerInterfaceRequest
+    implements bindings.MojoInterface<ValueEventListener>,
+               ValueEventListener {
+  factory ValueEventListenerInterfaceRequest() =>
+      new ValueEventListenerProxy.unbound();
+}
+
+class _ValueEventListenerProxyControl
+    extends bindings.ProxyMessageHandler
+    implements bindings.ProxyControl<ValueEventListener> {
+  _ValueEventListenerProxyControl.fromEndpoint(
       core.MojoMessagePipeEndpoint endpoint) : super.fromEndpoint(endpoint);
 
-  _ValueEventListenerProxyImpl.fromHandle(core.MojoHandle handle) :
-      super.fromHandle(handle);
+  _ValueEventListenerProxyControl.fromHandle(
+      core.MojoHandle handle) : super.fromHandle(handle);
 
-  _ValueEventListenerProxyImpl.unbound() : super.unbound();
+  _ValueEventListenerProxyControl.unbound() : super.unbound();
 
-  static _ValueEventListenerProxyImpl newFromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) {
-    assert(endpoint.setDescription("For _ValueEventListenerProxyImpl"));
-    return new _ValueEventListenerProxyImpl.fromEndpoint(endpoint);
-  }
-
-  service_describer.ServiceDescription get serviceDescription =>
-    new _ValueEventListenerServiceDescription();
+  String get serviceName => ValueEventListener.serviceName;
 
   void handleResponse(bindings.ServiceMessage message) {
     switch (message.header.type) {
@@ -2439,68 +2471,32 @@ class _ValueEventListenerProxyImpl extends bindings.Proxy {
     }
   }
 
+  ValueEventListener get impl => null;
+  set impl(ValueEventListener _) {
+    throw new core.MojoApiError("The impl of a Proxy cannot be set.");
+  }
+
+  @override
   String toString() {
     var superString = super.toString();
-    return "_ValueEventListenerProxyImpl($superString)";
+    return "_ValueEventListenerProxyControl($superString)";
   }
 }
 
-
-class _ValueEventListenerProxyCalls implements ValueEventListener {
-  _ValueEventListenerProxyImpl _proxyImpl;
-
-  _ValueEventListenerProxyCalls(this._proxyImpl);
-    void onCancelled(Error error) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _ValueEventListenerOnCancelledParams();
-      params.error = error;
-      _proxyImpl.sendMessage(params, _valueEventListenerMethodOnCancelledName);
-    }
-    void onDataChange(DataSnapshot snapshot) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _ValueEventListenerOnDataChangeParams();
-      params.snapshot = snapshot;
-      _proxyImpl.sendMessage(params, _valueEventListenerMethodOnDataChangeName);
-    }
-}
-
-
-class ValueEventListenerProxy implements bindings.ProxyBase {
-  final bindings.Proxy impl;
-  ValueEventListener ptr;
-
-  ValueEventListenerProxy(_ValueEventListenerProxyImpl proxyImpl) :
-      impl = proxyImpl,
-      ptr = new _ValueEventListenerProxyCalls(proxyImpl);
-
+class ValueEventListenerProxy
+    extends bindings.Proxy<ValueEventListener>
+    implements ValueEventListener,
+               ValueEventListenerInterface,
+               ValueEventListenerInterfaceRequest {
   ValueEventListenerProxy.fromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) :
-      impl = new _ValueEventListenerProxyImpl.fromEndpoint(endpoint) {
-    ptr = new _ValueEventListenerProxyCalls(impl);
-  }
+      core.MojoMessagePipeEndpoint endpoint)
+      : super(new _ValueEventListenerProxyControl.fromEndpoint(endpoint));
 
-  ValueEventListenerProxy.fromHandle(core.MojoHandle handle) :
-      impl = new _ValueEventListenerProxyImpl.fromHandle(handle) {
-    ptr = new _ValueEventListenerProxyCalls(impl);
-  }
+  ValueEventListenerProxy.fromHandle(core.MojoHandle handle)
+      : super(new _ValueEventListenerProxyControl.fromHandle(handle));
 
-  ValueEventListenerProxy.unbound() :
-      impl = new _ValueEventListenerProxyImpl.unbound() {
-    ptr = new _ValueEventListenerProxyCalls(impl);
-  }
-
-  factory ValueEventListenerProxy.connectToService(
-      bindings.ServiceConnector s, String url, [String serviceName]) {
-    ValueEventListenerProxy p = new ValueEventListenerProxy.unbound();
-    s.connectToService(url, p, serviceName);
-    return p;
-  }
+  ValueEventListenerProxy.unbound()
+      : super(new _ValueEventListenerProxyControl.unbound());
 
   static ValueEventListenerProxy newFromEndpoint(
       core.MojoMessagePipeEndpoint endpoint) {
@@ -2508,50 +2504,49 @@ class ValueEventListenerProxy implements bindings.ProxyBase {
     return new ValueEventListenerProxy.fromEndpoint(endpoint);
   }
 
-  String get serviceName => ValueEventListener.serviceName;
 
-  Future close({bool immediate: false}) => impl.close(immediate: immediate);
-
-  Future responseOrError(Future f) => impl.responseOrError(f);
-
-  Future get errorFuture => impl.errorFuture;
-
-  int get version => impl.version;
-
-  Future<int> queryVersion() => impl.queryVersion();
-
-  void requireVersion(int requiredVersion) {
-    impl.requireVersion(requiredVersion);
+  void onCancelled(Error error) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _ValueEventListenerOnCancelledParams();
+    params.error = error;
+    ctrl.sendMessage(params,
+        _valueEventListenerMethodOnCancelledName);
   }
-
-  String toString() {
-    return "ValueEventListenerProxy($impl)";
+  void onDataChange(DataSnapshot snapshot) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _ValueEventListenerOnDataChangeParams();
+    params.snapshot = snapshot;
+    ctrl.sendMessage(params,
+        _valueEventListenerMethodOnDataChangeName);
   }
 }
 
-
-class ValueEventListenerStub extends bindings.Stub {
+class _ValueEventListenerStubControl
+    extends bindings.StubMessageHandler
+    implements bindings.StubControl<ValueEventListener> {
   ValueEventListener _impl;
 
-  ValueEventListenerStub.fromEndpoint(
+  _ValueEventListenerStubControl.fromEndpoint(
       core.MojoMessagePipeEndpoint endpoint, [ValueEventListener impl])
       : super.fromEndpoint(endpoint, autoBegin: impl != null) {
     _impl = impl;
   }
 
-  ValueEventListenerStub.fromHandle(
+  _ValueEventListenerStubControl.fromHandle(
       core.MojoHandle handle, [ValueEventListener impl])
       : super.fromHandle(handle, autoBegin: impl != null) {
     _impl = impl;
   }
 
-  ValueEventListenerStub.unbound() : super.unbound();
+  _ValueEventListenerStubControl.unbound([this._impl]) : super.unbound();
 
-  static ValueEventListenerStub newFromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) {
-    assert(endpoint.setDescription("For ValueEventListenerStub"));
-    return new ValueEventListenerStub.fromEndpoint(endpoint);
-  }
+  String get serviceName => ValueEventListener.serviceName;
 
 
 
@@ -2601,19 +2596,43 @@ class ValueEventListenerStub extends bindings.Stub {
     }
   }
 
+  @override
   String toString() {
     var superString = super.toString();
-    return "ValueEventListenerStub($superString)";
+    return "_ValueEventListenerStubControl($superString)";
   }
 
   int get version => 0;
+}
 
-  static service_describer.ServiceDescription _cachedServiceDescription;
-  static service_describer.ServiceDescription get serviceDescription {
-    if (_cachedServiceDescription == null) {
-      _cachedServiceDescription = new _ValueEventListenerServiceDescription();
-    }
-    return _cachedServiceDescription;
+class ValueEventListenerStub
+    extends bindings.Stub<ValueEventListener>
+    implements ValueEventListener,
+               ValueEventListenerInterface,
+               ValueEventListenerInterfaceRequest {
+  ValueEventListenerStub.unbound([ValueEventListener impl])
+      : super(new _ValueEventListenerStubControl.unbound(impl));
+
+  ValueEventListenerStub.fromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint, [ValueEventListener impl])
+      : super(new _ValueEventListenerStubControl.fromEndpoint(endpoint, impl));
+
+  ValueEventListenerStub.fromHandle(
+      core.MojoHandle handle, [ValueEventListener impl])
+      : super(new _ValueEventListenerStubControl.fromHandle(handle, impl));
+
+  static ValueEventListenerStub newFromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint) {
+    assert(endpoint.setDescription("For ValueEventListenerStub"));
+    return new ValueEventListenerStub.fromEndpoint(endpoint);
+  }
+
+
+  void onCancelled(Error error) {
+    return impl.onCancelled(error);
+  }
+  void onDataChange(DataSnapshot snapshot) {
+    return impl.onDataChange(snapshot);
   }
 }
 
@@ -2636,6 +2655,26 @@ class _ChildEventListenerServiceDescription implements service_describer.Service
 
 abstract class ChildEventListener {
   static const String serviceName = null;
+
+  static service_describer.ServiceDescription _cachedServiceDescription;
+  static service_describer.ServiceDescription get serviceDescription {
+    if (_cachedServiceDescription == null) {
+      _cachedServiceDescription = new _ChildEventListenerServiceDescription();
+    }
+    return _cachedServiceDescription;
+  }
+
+  static ChildEventListenerProxy connectToService(
+      bindings.ServiceConnector s, String url, [String serviceName]) {
+    ChildEventListenerProxy p = new ChildEventListenerProxy.unbound();
+    String name = serviceName ?? ChildEventListener.serviceName;
+    if ((name == null) || name.isEmpty) {
+      throw new core.MojoApiError(
+          "If an interface has no ServiceName, then one must be provided.");
+    }
+    s.connectToService(url, p, name);
+    return p;
+  }
   void onCancelled(Error error);
   void onChildAdded(DataSnapshot snapshot, String previousChildName);
   void onChildChanged(DataSnapshot snapshot, String previousChildName);
@@ -2643,24 +2682,36 @@ abstract class ChildEventListener {
   void onChildRemoved(DataSnapshot snapshot);
 }
 
+abstract class ChildEventListenerInterface
+    implements bindings.MojoInterface<ChildEventListener>,
+               ChildEventListener {
+  factory ChildEventListenerInterface([ChildEventListener impl]) =>
+      new ChildEventListenerStub.unbound(impl);
+  factory ChildEventListenerInterface.fromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint,
+      [ChildEventListener impl]) =>
+      new ChildEventListenerStub.fromEndpoint(endpoint, impl);
+}
 
-class _ChildEventListenerProxyImpl extends bindings.Proxy {
-  _ChildEventListenerProxyImpl.fromEndpoint(
+abstract class ChildEventListenerInterfaceRequest
+    implements bindings.MojoInterface<ChildEventListener>,
+               ChildEventListener {
+  factory ChildEventListenerInterfaceRequest() =>
+      new ChildEventListenerProxy.unbound();
+}
+
+class _ChildEventListenerProxyControl
+    extends bindings.ProxyMessageHandler
+    implements bindings.ProxyControl<ChildEventListener> {
+  _ChildEventListenerProxyControl.fromEndpoint(
       core.MojoMessagePipeEndpoint endpoint) : super.fromEndpoint(endpoint);
 
-  _ChildEventListenerProxyImpl.fromHandle(core.MojoHandle handle) :
-      super.fromHandle(handle);
+  _ChildEventListenerProxyControl.fromHandle(
+      core.MojoHandle handle) : super.fromHandle(handle);
 
-  _ChildEventListenerProxyImpl.unbound() : super.unbound();
+  _ChildEventListenerProxyControl.unbound() : super.unbound();
 
-  static _ChildEventListenerProxyImpl newFromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) {
-    assert(endpoint.setDescription("For _ChildEventListenerProxyImpl"));
-    return new _ChildEventListenerProxyImpl.fromEndpoint(endpoint);
-  }
-
-  service_describer.ServiceDescription get serviceDescription =>
-    new _ChildEventListenerServiceDescription();
+  String get serviceName => ChildEventListener.serviceName;
 
   void handleResponse(bindings.ServiceMessage message) {
     switch (message.header.type) {
@@ -2671,98 +2722,32 @@ class _ChildEventListenerProxyImpl extends bindings.Proxy {
     }
   }
 
+  ChildEventListener get impl => null;
+  set impl(ChildEventListener _) {
+    throw new core.MojoApiError("The impl of a Proxy cannot be set.");
+  }
+
+  @override
   String toString() {
     var superString = super.toString();
-    return "_ChildEventListenerProxyImpl($superString)";
+    return "_ChildEventListenerProxyControl($superString)";
   }
 }
 
-
-class _ChildEventListenerProxyCalls implements ChildEventListener {
-  _ChildEventListenerProxyImpl _proxyImpl;
-
-  _ChildEventListenerProxyCalls(this._proxyImpl);
-    void onCancelled(Error error) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _ChildEventListenerOnCancelledParams();
-      params.error = error;
-      _proxyImpl.sendMessage(params, _childEventListenerMethodOnCancelledName);
-    }
-    void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _ChildEventListenerOnChildAddedParams();
-      params.snapshot = snapshot;
-      params.previousChildName = previousChildName;
-      _proxyImpl.sendMessage(params, _childEventListenerMethodOnChildAddedName);
-    }
-    void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _ChildEventListenerOnChildChangedParams();
-      params.snapshot = snapshot;
-      params.previousChildName = previousChildName;
-      _proxyImpl.sendMessage(params, _childEventListenerMethodOnChildChangedName);
-    }
-    void onChildMoved(DataSnapshot snapshot, String previousChildName) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _ChildEventListenerOnChildMovedParams();
-      params.snapshot = snapshot;
-      params.previousChildName = previousChildName;
-      _proxyImpl.sendMessage(params, _childEventListenerMethodOnChildMovedName);
-    }
-    void onChildRemoved(DataSnapshot snapshot) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _ChildEventListenerOnChildRemovedParams();
-      params.snapshot = snapshot;
-      _proxyImpl.sendMessage(params, _childEventListenerMethodOnChildRemovedName);
-    }
-}
-
-
-class ChildEventListenerProxy implements bindings.ProxyBase {
-  final bindings.Proxy impl;
-  ChildEventListener ptr;
-
-  ChildEventListenerProxy(_ChildEventListenerProxyImpl proxyImpl) :
-      impl = proxyImpl,
-      ptr = new _ChildEventListenerProxyCalls(proxyImpl);
-
+class ChildEventListenerProxy
+    extends bindings.Proxy<ChildEventListener>
+    implements ChildEventListener,
+               ChildEventListenerInterface,
+               ChildEventListenerInterfaceRequest {
   ChildEventListenerProxy.fromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) :
-      impl = new _ChildEventListenerProxyImpl.fromEndpoint(endpoint) {
-    ptr = new _ChildEventListenerProxyCalls(impl);
-  }
+      core.MojoMessagePipeEndpoint endpoint)
+      : super(new _ChildEventListenerProxyControl.fromEndpoint(endpoint));
 
-  ChildEventListenerProxy.fromHandle(core.MojoHandle handle) :
-      impl = new _ChildEventListenerProxyImpl.fromHandle(handle) {
-    ptr = new _ChildEventListenerProxyCalls(impl);
-  }
+  ChildEventListenerProxy.fromHandle(core.MojoHandle handle)
+      : super(new _ChildEventListenerProxyControl.fromHandle(handle));
 
-  ChildEventListenerProxy.unbound() :
-      impl = new _ChildEventListenerProxyImpl.unbound() {
-    ptr = new _ChildEventListenerProxyCalls(impl);
-  }
-
-  factory ChildEventListenerProxy.connectToService(
-      bindings.ServiceConnector s, String url, [String serviceName]) {
-    ChildEventListenerProxy p = new ChildEventListenerProxy.unbound();
-    s.connectToService(url, p, serviceName);
-    return p;
-  }
+  ChildEventListenerProxy.unbound()
+      : super(new _ChildEventListenerProxyControl.unbound());
 
   static ChildEventListenerProxy newFromEndpoint(
       core.MojoMessagePipeEndpoint endpoint) {
@@ -2770,50 +2755,82 @@ class ChildEventListenerProxy implements bindings.ProxyBase {
     return new ChildEventListenerProxy.fromEndpoint(endpoint);
   }
 
-  String get serviceName => ChildEventListener.serviceName;
 
-  Future close({bool immediate: false}) => impl.close(immediate: immediate);
-
-  Future responseOrError(Future f) => impl.responseOrError(f);
-
-  Future get errorFuture => impl.errorFuture;
-
-  int get version => impl.version;
-
-  Future<int> queryVersion() => impl.queryVersion();
-
-  void requireVersion(int requiredVersion) {
-    impl.requireVersion(requiredVersion);
+  void onCancelled(Error error) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _ChildEventListenerOnCancelledParams();
+    params.error = error;
+    ctrl.sendMessage(params,
+        _childEventListenerMethodOnCancelledName);
   }
-
-  String toString() {
-    return "ChildEventListenerProxy($impl)";
+  void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _ChildEventListenerOnChildAddedParams();
+    params.snapshot = snapshot;
+    params.previousChildName = previousChildName;
+    ctrl.sendMessage(params,
+        _childEventListenerMethodOnChildAddedName);
+  }
+  void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _ChildEventListenerOnChildChangedParams();
+    params.snapshot = snapshot;
+    params.previousChildName = previousChildName;
+    ctrl.sendMessage(params,
+        _childEventListenerMethodOnChildChangedName);
+  }
+  void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _ChildEventListenerOnChildMovedParams();
+    params.snapshot = snapshot;
+    params.previousChildName = previousChildName;
+    ctrl.sendMessage(params,
+        _childEventListenerMethodOnChildMovedName);
+  }
+  void onChildRemoved(DataSnapshot snapshot) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _ChildEventListenerOnChildRemovedParams();
+    params.snapshot = snapshot;
+    ctrl.sendMessage(params,
+        _childEventListenerMethodOnChildRemovedName);
   }
 }
 
-
-class ChildEventListenerStub extends bindings.Stub {
+class _ChildEventListenerStubControl
+    extends bindings.StubMessageHandler
+    implements bindings.StubControl<ChildEventListener> {
   ChildEventListener _impl;
 
-  ChildEventListenerStub.fromEndpoint(
+  _ChildEventListenerStubControl.fromEndpoint(
       core.MojoMessagePipeEndpoint endpoint, [ChildEventListener impl])
       : super.fromEndpoint(endpoint, autoBegin: impl != null) {
     _impl = impl;
   }
 
-  ChildEventListenerStub.fromHandle(
+  _ChildEventListenerStubControl.fromHandle(
       core.MojoHandle handle, [ChildEventListener impl])
       : super.fromHandle(handle, autoBegin: impl != null) {
     _impl = impl;
   }
 
-  ChildEventListenerStub.unbound() : super.unbound();
+  _ChildEventListenerStubControl.unbound([this._impl]) : super.unbound();
 
-  static ChildEventListenerStub newFromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) {
-    assert(endpoint.setDescription("For ChildEventListenerStub"));
-    return new ChildEventListenerStub.fromEndpoint(endpoint);
-  }
+  String get serviceName => ChildEventListener.serviceName;
 
 
 
@@ -2878,19 +2895,52 @@ class ChildEventListenerStub extends bindings.Stub {
     }
   }
 
+  @override
   String toString() {
     var superString = super.toString();
-    return "ChildEventListenerStub($superString)";
+    return "_ChildEventListenerStubControl($superString)";
   }
 
   int get version => 0;
+}
 
-  static service_describer.ServiceDescription _cachedServiceDescription;
-  static service_describer.ServiceDescription get serviceDescription {
-    if (_cachedServiceDescription == null) {
-      _cachedServiceDescription = new _ChildEventListenerServiceDescription();
-    }
-    return _cachedServiceDescription;
+class ChildEventListenerStub
+    extends bindings.Stub<ChildEventListener>
+    implements ChildEventListener,
+               ChildEventListenerInterface,
+               ChildEventListenerInterfaceRequest {
+  ChildEventListenerStub.unbound([ChildEventListener impl])
+      : super(new _ChildEventListenerStubControl.unbound(impl));
+
+  ChildEventListenerStub.fromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint, [ChildEventListener impl])
+      : super(new _ChildEventListenerStubControl.fromEndpoint(endpoint, impl));
+
+  ChildEventListenerStub.fromHandle(
+      core.MojoHandle handle, [ChildEventListener impl])
+      : super(new _ChildEventListenerStubControl.fromHandle(handle, impl));
+
+  static ChildEventListenerStub newFromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint) {
+    assert(endpoint.setDescription("For ChildEventListenerStub"));
+    return new ChildEventListenerStub.fromEndpoint(endpoint);
+  }
+
+
+  void onCancelled(Error error) {
+    return impl.onCancelled(error);
+  }
+  void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+    return impl.onChildAdded(snapshot, previousChildName);
+  }
+  void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+    return impl.onChildChanged(snapshot, previousChildName);
+  }
+  void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+    return impl.onChildMoved(snapshot, previousChildName);
+  }
+  void onChildRemoved(DataSnapshot snapshot) {
+    return impl.onChildRemoved(snapshot);
   }
 }
 
@@ -2915,33 +2965,65 @@ class _DatabaseReferenceServiceDescription implements service_describer.ServiceD
 
 abstract class DatabaseReference {
   static const String serviceName = "firebase::DatabaseReference";
-  void addValueEventListener(String path, Object listener);
-  void addChildEventListener(String path, Object listener);
+
+  static service_describer.ServiceDescription _cachedServiceDescription;
+  static service_describer.ServiceDescription get serviceDescription {
+    if (_cachedServiceDescription == null) {
+      _cachedServiceDescription = new _DatabaseReferenceServiceDescription();
+    }
+    return _cachedServiceDescription;
+  }
+
+  static DatabaseReferenceProxy connectToService(
+      bindings.ServiceConnector s, String url, [String serviceName]) {
+    DatabaseReferenceProxy p = new DatabaseReferenceProxy.unbound();
+    String name = serviceName ?? DatabaseReference.serviceName;
+    if ((name == null) || name.isEmpty) {
+      throw new core.MojoApiError(
+          "If an interface has no ServiceName, then one must be provided.");
+    }
+    s.connectToService(url, p, name);
+    return p;
+  }
+  void addValueEventListener(String path, ValueEventListenerInterface listener);
+  void addChildEventListener(String path, ChildEventListenerInterface listener);
   dynamic observeSingleEventOfType(String path,EventType eventType,[Function responseFactory = null]);
   dynamic setValue(String path,String jsonValue,int priority,bool hasPriority,[Function responseFactory = null]);
   dynamic removeValue(String path,[Function responseFactory = null]);
-  dynamic push(String path,Object child,[Function responseFactory = null]);
+  dynamic push(String path,DatabaseReferenceInterfaceRequest child,[Function responseFactory = null]);
   dynamic setPriority(String path,int priority,[Function responseFactory = null]);
 }
 
+abstract class DatabaseReferenceInterface
+    implements bindings.MojoInterface<DatabaseReference>,
+               DatabaseReference {
+  factory DatabaseReferenceInterface([DatabaseReference impl]) =>
+      new DatabaseReferenceStub.unbound(impl);
+  factory DatabaseReferenceInterface.fromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint,
+      [DatabaseReference impl]) =>
+      new DatabaseReferenceStub.fromEndpoint(endpoint, impl);
+}
 
-class _DatabaseReferenceProxyImpl extends bindings.Proxy {
-  _DatabaseReferenceProxyImpl.fromEndpoint(
+abstract class DatabaseReferenceInterfaceRequest
+    implements bindings.MojoInterface<DatabaseReference>,
+               DatabaseReference {
+  factory DatabaseReferenceInterfaceRequest() =>
+      new DatabaseReferenceProxy.unbound();
+}
+
+class _DatabaseReferenceProxyControl
+    extends bindings.ProxyMessageHandler
+    implements bindings.ProxyControl<DatabaseReference> {
+  _DatabaseReferenceProxyControl.fromEndpoint(
       core.MojoMessagePipeEndpoint endpoint) : super.fromEndpoint(endpoint);
 
-  _DatabaseReferenceProxyImpl.fromHandle(core.MojoHandle handle) :
-      super.fromHandle(handle);
+  _DatabaseReferenceProxyControl.fromHandle(
+      core.MojoHandle handle) : super.fromHandle(handle);
 
-  _DatabaseReferenceProxyImpl.unbound() : super.unbound();
+  _DatabaseReferenceProxyControl.unbound() : super.unbound();
 
-  static _DatabaseReferenceProxyImpl newFromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) {
-    assert(endpoint.setDescription("For _DatabaseReferenceProxyImpl"));
-    return new _DatabaseReferenceProxyImpl.fromEndpoint(endpoint);
-  }
-
-  service_describer.ServiceDescription get serviceDescription =>
-    new _DatabaseReferenceServiceDescription();
+  String get serviceName => DatabaseReference.serviceName;
 
   void handleResponse(bindings.ServiceMessage message) {
     switch (message.header.type) {
@@ -3052,121 +3134,32 @@ class _DatabaseReferenceProxyImpl extends bindings.Proxy {
     }
   }
 
+  DatabaseReference get impl => null;
+  set impl(DatabaseReference _) {
+    throw new core.MojoApiError("The impl of a Proxy cannot be set.");
+  }
+
+  @override
   String toString() {
     var superString = super.toString();
-    return "_DatabaseReferenceProxyImpl($superString)";
+    return "_DatabaseReferenceProxyControl($superString)";
   }
 }
 
-
-class _DatabaseReferenceProxyCalls implements DatabaseReference {
-  _DatabaseReferenceProxyImpl _proxyImpl;
-
-  _DatabaseReferenceProxyCalls(this._proxyImpl);
-    void addValueEventListener(String path, Object listener) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _DatabaseReferenceAddValueEventListenerParams();
-      params.path = path;
-      params.listener = listener;
-      _proxyImpl.sendMessage(params, _databaseReferenceMethodAddValueEventListenerName);
-    }
-    void addChildEventListener(String path, Object listener) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _DatabaseReferenceAddChildEventListenerParams();
-      params.path = path;
-      params.listener = listener;
-      _proxyImpl.sendMessage(params, _databaseReferenceMethodAddChildEventListenerName);
-    }
-    dynamic observeSingleEventOfType(String path,EventType eventType,[Function responseFactory = null]) {
-      var params = new _DatabaseReferenceObserveSingleEventOfTypeParams();
-      params.path = path;
-      params.eventType = eventType;
-      return _proxyImpl.sendMessageWithRequestId(
-          params,
-          _databaseReferenceMethodObserveSingleEventOfTypeName,
-          -1,
-          bindings.MessageHeader.kMessageExpectsResponse);
-    }
-    dynamic setValue(String path,String jsonValue,int priority,bool hasPriority,[Function responseFactory = null]) {
-      var params = new _DatabaseReferenceSetValueParams();
-      params.path = path;
-      params.jsonValue = jsonValue;
-      params.priority = priority;
-      params.hasPriority = hasPriority;
-      return _proxyImpl.sendMessageWithRequestId(
-          params,
-          _databaseReferenceMethodSetValueName,
-          -1,
-          bindings.MessageHeader.kMessageExpectsResponse);
-    }
-    dynamic removeValue(String path,[Function responseFactory = null]) {
-      var params = new _DatabaseReferenceRemoveValueParams();
-      params.path = path;
-      return _proxyImpl.sendMessageWithRequestId(
-          params,
-          _databaseReferenceMethodRemoveValueName,
-          -1,
-          bindings.MessageHeader.kMessageExpectsResponse);
-    }
-    dynamic push(String path,Object child,[Function responseFactory = null]) {
-      var params = new _DatabaseReferencePushParams();
-      params.path = path;
-      params.child = child;
-      return _proxyImpl.sendMessageWithRequestId(
-          params,
-          _databaseReferenceMethodPushName,
-          -1,
-          bindings.MessageHeader.kMessageExpectsResponse);
-    }
-    dynamic setPriority(String path,int priority,[Function responseFactory = null]) {
-      var params = new _DatabaseReferenceSetPriorityParams();
-      params.path = path;
-      params.priority = priority;
-      return _proxyImpl.sendMessageWithRequestId(
-          params,
-          _databaseReferenceMethodSetPriorityName,
-          -1,
-          bindings.MessageHeader.kMessageExpectsResponse);
-    }
-}
-
-
-class DatabaseReferenceProxy implements bindings.ProxyBase {
-  final bindings.Proxy impl;
-  DatabaseReference ptr;
-
-  DatabaseReferenceProxy(_DatabaseReferenceProxyImpl proxyImpl) :
-      impl = proxyImpl,
-      ptr = new _DatabaseReferenceProxyCalls(proxyImpl);
-
+class DatabaseReferenceProxy
+    extends bindings.Proxy<DatabaseReference>
+    implements DatabaseReference,
+               DatabaseReferenceInterface,
+               DatabaseReferenceInterfaceRequest {
   DatabaseReferenceProxy.fromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) :
-      impl = new _DatabaseReferenceProxyImpl.fromEndpoint(endpoint) {
-    ptr = new _DatabaseReferenceProxyCalls(impl);
-  }
+      core.MojoMessagePipeEndpoint endpoint)
+      : super(new _DatabaseReferenceProxyControl.fromEndpoint(endpoint));
 
-  DatabaseReferenceProxy.fromHandle(core.MojoHandle handle) :
-      impl = new _DatabaseReferenceProxyImpl.fromHandle(handle) {
-    ptr = new _DatabaseReferenceProxyCalls(impl);
-  }
+  DatabaseReferenceProxy.fromHandle(core.MojoHandle handle)
+      : super(new _DatabaseReferenceProxyControl.fromHandle(handle));
 
-  DatabaseReferenceProxy.unbound() :
-      impl = new _DatabaseReferenceProxyImpl.unbound() {
-    ptr = new _DatabaseReferenceProxyCalls(impl);
-  }
-
-  factory DatabaseReferenceProxy.connectToService(
-      bindings.ServiceConnector s, String url, [String serviceName]) {
-    DatabaseReferenceProxy p = new DatabaseReferenceProxy.unbound();
-    s.connectToService(url, p, serviceName);
-    return p;
-  }
+  DatabaseReferenceProxy.unbound()
+      : super(new _DatabaseReferenceProxyControl.unbound());
 
   static DatabaseReferenceProxy newFromEndpoint(
       core.MojoMessagePipeEndpoint endpoint) {
@@ -3174,50 +3167,102 @@ class DatabaseReferenceProxy implements bindings.ProxyBase {
     return new DatabaseReferenceProxy.fromEndpoint(endpoint);
   }
 
-  String get serviceName => DatabaseReference.serviceName;
 
-  Future close({bool immediate: false}) => impl.close(immediate: immediate);
-
-  Future responseOrError(Future f) => impl.responseOrError(f);
-
-  Future get errorFuture => impl.errorFuture;
-
-  int get version => impl.version;
-
-  Future<int> queryVersion() => impl.queryVersion();
-
-  void requireVersion(int requiredVersion) {
-    impl.requireVersion(requiredVersion);
+  void addValueEventListener(String path, ValueEventListenerInterface listener) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _DatabaseReferenceAddValueEventListenerParams();
+    params.path = path;
+    params.listener = listener;
+    ctrl.sendMessage(params,
+        _databaseReferenceMethodAddValueEventListenerName);
   }
-
-  String toString() {
-    return "DatabaseReferenceProxy($impl)";
+  void addChildEventListener(String path, ChildEventListenerInterface listener) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _DatabaseReferenceAddChildEventListenerParams();
+    params.path = path;
+    params.listener = listener;
+    ctrl.sendMessage(params,
+        _databaseReferenceMethodAddChildEventListenerName);
+  }
+  dynamic observeSingleEventOfType(String path,EventType eventType,[Function responseFactory = null]) {
+    var params = new _DatabaseReferenceObserveSingleEventOfTypeParams();
+    params.path = path;
+    params.eventType = eventType;
+    return ctrl.sendMessageWithRequestId(
+        params,
+        _databaseReferenceMethodObserveSingleEventOfTypeName,
+        -1,
+        bindings.MessageHeader.kMessageExpectsResponse);
+  }
+  dynamic setValue(String path,String jsonValue,int priority,bool hasPriority,[Function responseFactory = null]) {
+    var params = new _DatabaseReferenceSetValueParams();
+    params.path = path;
+    params.jsonValue = jsonValue;
+    params.priority = priority;
+    params.hasPriority = hasPriority;
+    return ctrl.sendMessageWithRequestId(
+        params,
+        _databaseReferenceMethodSetValueName,
+        -1,
+        bindings.MessageHeader.kMessageExpectsResponse);
+  }
+  dynamic removeValue(String path,[Function responseFactory = null]) {
+    var params = new _DatabaseReferenceRemoveValueParams();
+    params.path = path;
+    return ctrl.sendMessageWithRequestId(
+        params,
+        _databaseReferenceMethodRemoveValueName,
+        -1,
+        bindings.MessageHeader.kMessageExpectsResponse);
+  }
+  dynamic push(String path,DatabaseReferenceInterfaceRequest child,[Function responseFactory = null]) {
+    var params = new _DatabaseReferencePushParams();
+    params.path = path;
+    params.child = child;
+    return ctrl.sendMessageWithRequestId(
+        params,
+        _databaseReferenceMethodPushName,
+        -1,
+        bindings.MessageHeader.kMessageExpectsResponse);
+  }
+  dynamic setPriority(String path,int priority,[Function responseFactory = null]) {
+    var params = new _DatabaseReferenceSetPriorityParams();
+    params.path = path;
+    params.priority = priority;
+    return ctrl.sendMessageWithRequestId(
+        params,
+        _databaseReferenceMethodSetPriorityName,
+        -1,
+        bindings.MessageHeader.kMessageExpectsResponse);
   }
 }
 
-
-class DatabaseReferenceStub extends bindings.Stub {
+class _DatabaseReferenceStubControl
+    extends bindings.StubMessageHandler
+    implements bindings.StubControl<DatabaseReference> {
   DatabaseReference _impl;
 
-  DatabaseReferenceStub.fromEndpoint(
+  _DatabaseReferenceStubControl.fromEndpoint(
       core.MojoMessagePipeEndpoint endpoint, [DatabaseReference impl])
       : super.fromEndpoint(endpoint, autoBegin: impl != null) {
     _impl = impl;
   }
 
-  DatabaseReferenceStub.fromHandle(
+  _DatabaseReferenceStubControl.fromHandle(
       core.MojoHandle handle, [DatabaseReference impl])
       : super.fromHandle(handle, autoBegin: impl != null) {
     _impl = impl;
   }
 
-  DatabaseReferenceStub.unbound() : super.unbound();
+  _DatabaseReferenceStubControl.unbound([this._impl]) : super.unbound();
 
-  static DatabaseReferenceStub newFromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) {
-    assert(endpoint.setDescription("For DatabaseReferenceStub"));
-    return new DatabaseReferenceStub.fromEndpoint(endpoint);
-  }
+  String get serviceName => DatabaseReference.serviceName;
 
 
   DatabaseReferenceObserveSingleEventOfTypeResponseParams _databaseReferenceObserveSingleEventOfTypeResponseParamsFactory(DataSnapshot snapshot) {
@@ -3402,19 +3447,58 @@ class DatabaseReferenceStub extends bindings.Stub {
     }
   }
 
+  @override
   String toString() {
     var superString = super.toString();
-    return "DatabaseReferenceStub($superString)";
+    return "_DatabaseReferenceStubControl($superString)";
   }
 
   int get version => 0;
+}
 
-  static service_describer.ServiceDescription _cachedServiceDescription;
-  static service_describer.ServiceDescription get serviceDescription {
-    if (_cachedServiceDescription == null) {
-      _cachedServiceDescription = new _DatabaseReferenceServiceDescription();
-    }
-    return _cachedServiceDescription;
+class DatabaseReferenceStub
+    extends bindings.Stub<DatabaseReference>
+    implements DatabaseReference,
+               DatabaseReferenceInterface,
+               DatabaseReferenceInterfaceRequest {
+  DatabaseReferenceStub.unbound([DatabaseReference impl])
+      : super(new _DatabaseReferenceStubControl.unbound(impl));
+
+  DatabaseReferenceStub.fromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint, [DatabaseReference impl])
+      : super(new _DatabaseReferenceStubControl.fromEndpoint(endpoint, impl));
+
+  DatabaseReferenceStub.fromHandle(
+      core.MojoHandle handle, [DatabaseReference impl])
+      : super(new _DatabaseReferenceStubControl.fromHandle(handle, impl));
+
+  static DatabaseReferenceStub newFromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint) {
+    assert(endpoint.setDescription("For DatabaseReferenceStub"));
+    return new DatabaseReferenceStub.fromEndpoint(endpoint);
+  }
+
+
+  void addValueEventListener(String path, ValueEventListenerInterface listener) {
+    return impl.addValueEventListener(path, listener);
+  }
+  void addChildEventListener(String path, ChildEventListenerInterface listener) {
+    return impl.addChildEventListener(path, listener);
+  }
+  dynamic observeSingleEventOfType(String path,EventType eventType,[Function responseFactory = null]) {
+    return impl.observeSingleEventOfType(path,eventType,responseFactory);
+  }
+  dynamic setValue(String path,String jsonValue,int priority,bool hasPriority,[Function responseFactory = null]) {
+    return impl.setValue(path,jsonValue,priority,hasPriority,responseFactory);
+  }
+  dynamic removeValue(String path,[Function responseFactory = null]) {
+    return impl.removeValue(path,responseFactory);
+  }
+  dynamic push(String path,DatabaseReferenceInterfaceRequest child,[Function responseFactory = null]) {
+    return impl.push(path,child,responseFactory);
+  }
+  dynamic setPriority(String path,int priority,[Function responseFactory = null]) {
+    return impl.setPriority(path,priority,responseFactory);
   }
 }
 
@@ -3437,31 +3521,63 @@ class _FirebaseServiceDescription implements service_describer.ServiceDescriptio
 
 abstract class Firebase {
   static const String serviceName = "firebase::Firebase";
+
+  static service_describer.ServiceDescription _cachedServiceDescription;
+  static service_describer.ServiceDescription get serviceDescription {
+    if (_cachedServiceDescription == null) {
+      _cachedServiceDescription = new _FirebaseServiceDescription();
+    }
+    return _cachedServiceDescription;
+  }
+
+  static FirebaseProxy connectToService(
+      bindings.ServiceConnector s, String url, [String serviceName]) {
+    FirebaseProxy p = new FirebaseProxy.unbound();
+    String name = serviceName ?? Firebase.serviceName;
+    if ((name == null) || name.isEmpty) {
+      throw new core.MojoApiError(
+          "If an interface has no ServiceName, then one must be provided.");
+    }
+    s.connectToService(url, p, name);
+    return p;
+  }
   void configure();
-  void reference(Object result);
+  void reference(DatabaseReferenceInterfaceRequest result);
   dynamic signInAnonymously([Function responseFactory = null]);
   dynamic signOut([Function responseFactory = null]);
   void logCrash(String message);
 }
 
+abstract class FirebaseInterface
+    implements bindings.MojoInterface<Firebase>,
+               Firebase {
+  factory FirebaseInterface([Firebase impl]) =>
+      new FirebaseStub.unbound(impl);
+  factory FirebaseInterface.fromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint,
+      [Firebase impl]) =>
+      new FirebaseStub.fromEndpoint(endpoint, impl);
+}
 
-class _FirebaseProxyImpl extends bindings.Proxy {
-  _FirebaseProxyImpl.fromEndpoint(
+abstract class FirebaseInterfaceRequest
+    implements bindings.MojoInterface<Firebase>,
+               Firebase {
+  factory FirebaseInterfaceRequest() =>
+      new FirebaseProxy.unbound();
+}
+
+class _FirebaseProxyControl
+    extends bindings.ProxyMessageHandler
+    implements bindings.ProxyControl<Firebase> {
+  _FirebaseProxyControl.fromEndpoint(
       core.MojoMessagePipeEndpoint endpoint) : super.fromEndpoint(endpoint);
 
-  _FirebaseProxyImpl.fromHandle(core.MojoHandle handle) :
-      super.fromHandle(handle);
+  _FirebaseProxyControl.fromHandle(
+      core.MojoHandle handle) : super.fromHandle(handle);
 
-  _FirebaseProxyImpl.unbound() : super.unbound();
+  _FirebaseProxyControl.unbound() : super.unbound();
 
-  static _FirebaseProxyImpl newFromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) {
-    assert(endpoint.setDescription("For _FirebaseProxyImpl"));
-    return new _FirebaseProxyImpl.fromEndpoint(endpoint);
-  }
-
-  service_describer.ServiceDescription get serviceDescription =>
-    new _FirebaseServiceDescription();
+  String get serviceName => Firebase.serviceName;
 
   void handleResponse(bindings.ServiceMessage message) {
     switch (message.header.type) {
@@ -3512,92 +3628,32 @@ class _FirebaseProxyImpl extends bindings.Proxy {
     }
   }
 
+  Firebase get impl => null;
+  set impl(Firebase _) {
+    throw new core.MojoApiError("The impl of a Proxy cannot be set.");
+  }
+
+  @override
   String toString() {
     var superString = super.toString();
-    return "_FirebaseProxyImpl($superString)";
+    return "_FirebaseProxyControl($superString)";
   }
 }
 
-
-class _FirebaseProxyCalls implements Firebase {
-  _FirebaseProxyImpl _proxyImpl;
-
-  _FirebaseProxyCalls(this._proxyImpl);
-    void configure() {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _FirebaseConfigureParams();
-      _proxyImpl.sendMessage(params, _firebaseMethodConfigureName);
-    }
-    void reference(Object result) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _FirebaseReferenceParams();
-      params.result = result;
-      _proxyImpl.sendMessage(params, _firebaseMethodReferenceName);
-    }
-    dynamic signInAnonymously([Function responseFactory = null]) {
-      var params = new _FirebaseSignInAnonymouslyParams();
-      return _proxyImpl.sendMessageWithRequestId(
-          params,
-          _firebaseMethodSignInAnonymouslyName,
-          -1,
-          bindings.MessageHeader.kMessageExpectsResponse);
-    }
-    dynamic signOut([Function responseFactory = null]) {
-      var params = new _FirebaseSignOutParams();
-      return _proxyImpl.sendMessageWithRequestId(
-          params,
-          _firebaseMethodSignOutName,
-          -1,
-          bindings.MessageHeader.kMessageExpectsResponse);
-    }
-    void logCrash(String message) {
-      if (!_proxyImpl.isBound) {
-        _proxyImpl.proxyError("The Proxy is closed.");
-        return;
-      }
-      var params = new _FirebaseLogCrashParams();
-      params.message = message;
-      _proxyImpl.sendMessage(params, _firebaseMethodLogCrashName);
-    }
-}
-
-
-class FirebaseProxy implements bindings.ProxyBase {
-  final bindings.Proxy impl;
-  Firebase ptr;
-
-  FirebaseProxy(_FirebaseProxyImpl proxyImpl) :
-      impl = proxyImpl,
-      ptr = new _FirebaseProxyCalls(proxyImpl);
-
+class FirebaseProxy
+    extends bindings.Proxy<Firebase>
+    implements Firebase,
+               FirebaseInterface,
+               FirebaseInterfaceRequest {
   FirebaseProxy.fromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) :
-      impl = new _FirebaseProxyImpl.fromEndpoint(endpoint) {
-    ptr = new _FirebaseProxyCalls(impl);
-  }
+      core.MojoMessagePipeEndpoint endpoint)
+      : super(new _FirebaseProxyControl.fromEndpoint(endpoint));
 
-  FirebaseProxy.fromHandle(core.MojoHandle handle) :
-      impl = new _FirebaseProxyImpl.fromHandle(handle) {
-    ptr = new _FirebaseProxyCalls(impl);
-  }
+  FirebaseProxy.fromHandle(core.MojoHandle handle)
+      : super(new _FirebaseProxyControl.fromHandle(handle));
 
-  FirebaseProxy.unbound() :
-      impl = new _FirebaseProxyImpl.unbound() {
-    ptr = new _FirebaseProxyCalls(impl);
-  }
-
-  factory FirebaseProxy.connectToService(
-      bindings.ServiceConnector s, String url, [String serviceName]) {
-    FirebaseProxy p = new FirebaseProxy.unbound();
-    s.connectToService(url, p, serviceName);
-    return p;
-  }
+  FirebaseProxy.unbound()
+      : super(new _FirebaseProxyControl.unbound());
 
   static FirebaseProxy newFromEndpoint(
       core.MojoMessagePipeEndpoint endpoint) {
@@ -3605,50 +3661,74 @@ class FirebaseProxy implements bindings.ProxyBase {
     return new FirebaseProxy.fromEndpoint(endpoint);
   }
 
-  String get serviceName => Firebase.serviceName;
 
-  Future close({bool immediate: false}) => impl.close(immediate: immediate);
-
-  Future responseOrError(Future f) => impl.responseOrError(f);
-
-  Future get errorFuture => impl.errorFuture;
-
-  int get version => impl.version;
-
-  Future<int> queryVersion() => impl.queryVersion();
-
-  void requireVersion(int requiredVersion) {
-    impl.requireVersion(requiredVersion);
+  void configure() {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _FirebaseConfigureParams();
+    ctrl.sendMessage(params,
+        _firebaseMethodConfigureName);
   }
-
-  String toString() {
-    return "FirebaseProxy($impl)";
+  void reference(DatabaseReferenceInterfaceRequest result) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _FirebaseReferenceParams();
+    params.result = result;
+    ctrl.sendMessage(params,
+        _firebaseMethodReferenceName);
+  }
+  dynamic signInAnonymously([Function responseFactory = null]) {
+    var params = new _FirebaseSignInAnonymouslyParams();
+    return ctrl.sendMessageWithRequestId(
+        params,
+        _firebaseMethodSignInAnonymouslyName,
+        -1,
+        bindings.MessageHeader.kMessageExpectsResponse);
+  }
+  dynamic signOut([Function responseFactory = null]) {
+    var params = new _FirebaseSignOutParams();
+    return ctrl.sendMessageWithRequestId(
+        params,
+        _firebaseMethodSignOutName,
+        -1,
+        bindings.MessageHeader.kMessageExpectsResponse);
+  }
+  void logCrash(String message) {
+    if (!ctrl.isBound) {
+      ctrl.proxyError("The Proxy is closed.");
+      return;
+    }
+    var params = new _FirebaseLogCrashParams();
+    params.message = message;
+    ctrl.sendMessage(params,
+        _firebaseMethodLogCrashName);
   }
 }
 
-
-class FirebaseStub extends bindings.Stub {
+class _FirebaseStubControl
+    extends bindings.StubMessageHandler
+    implements bindings.StubControl<Firebase> {
   Firebase _impl;
 
-  FirebaseStub.fromEndpoint(
+  _FirebaseStubControl.fromEndpoint(
       core.MojoMessagePipeEndpoint endpoint, [Firebase impl])
       : super.fromEndpoint(endpoint, autoBegin: impl != null) {
     _impl = impl;
   }
 
-  FirebaseStub.fromHandle(
+  _FirebaseStubControl.fromHandle(
       core.MojoHandle handle, [Firebase impl])
       : super.fromHandle(handle, autoBegin: impl != null) {
     _impl = impl;
   }
 
-  FirebaseStub.unbound() : super.unbound();
+  _FirebaseStubControl.unbound([this._impl]) : super.unbound();
 
-  static FirebaseStub newFromEndpoint(
-      core.MojoMessagePipeEndpoint endpoint) {
-    assert(endpoint.setDescription("For FirebaseStub"));
-    return new FirebaseStub.fromEndpoint(endpoint);
-  }
+  String get serviceName => Firebase.serviceName;
 
 
   FirebaseSignInAnonymouslyResponseParams _firebaseSignInAnonymouslyResponseParamsFactory(User user, Error error) {
@@ -3752,19 +3832,52 @@ class FirebaseStub extends bindings.Stub {
     }
   }
 
+  @override
   String toString() {
     var superString = super.toString();
-    return "FirebaseStub($superString)";
+    return "_FirebaseStubControl($superString)";
   }
 
   int get version => 0;
+}
 
-  static service_describer.ServiceDescription _cachedServiceDescription;
-  static service_describer.ServiceDescription get serviceDescription {
-    if (_cachedServiceDescription == null) {
-      _cachedServiceDescription = new _FirebaseServiceDescription();
-    }
-    return _cachedServiceDescription;
+class FirebaseStub
+    extends bindings.Stub<Firebase>
+    implements Firebase,
+               FirebaseInterface,
+               FirebaseInterfaceRequest {
+  FirebaseStub.unbound([Firebase impl])
+      : super(new _FirebaseStubControl.unbound(impl));
+
+  FirebaseStub.fromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint, [Firebase impl])
+      : super(new _FirebaseStubControl.fromEndpoint(endpoint, impl));
+
+  FirebaseStub.fromHandle(
+      core.MojoHandle handle, [Firebase impl])
+      : super(new _FirebaseStubControl.fromHandle(handle, impl));
+
+  static FirebaseStub newFromEndpoint(
+      core.MojoMessagePipeEndpoint endpoint) {
+    assert(endpoint.setDescription("For FirebaseStub"));
+    return new FirebaseStub.fromEndpoint(endpoint);
+  }
+
+
+  void configure() {
+    return impl.configure();
+  }
+  void reference(DatabaseReferenceInterfaceRequest result) {
+    return impl.reference(result);
+  }
+  dynamic signInAnonymously([Function responseFactory = null]) {
+    return impl.signInAnonymously(responseFactory);
+  }
+  dynamic signOut([Function responseFactory = null]) {
+    return impl.signOut(responseFactory);
+  }
+  void logCrash(String message) {
+    return impl.logCrash(message);
   }
 }
 
