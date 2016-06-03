@@ -44,6 +44,52 @@ database.onChildAdded.listen((Event event) {
 });
 ```
 
+## Contributing
+
+Files in the lib/generated folder require a Flutter engine to build.
+
+Clone this repository into your Flutter engine repository's ```third_party/firebase``` directory.
+
+To get the Firebase SDK, create a new iOS project and run ```pod init```.
+Add the following to your Podfile:
+
+```
+target 'YOUR_PROJECT_NAME' do
+pod 'Firebase'
+pod 'FirebaseAuth'
+pod 'FirebaseDatabase'
+pod 'FirebaseStorage'
+pod 'GoogleMobileAds'
+pod 'FirebaseRemoteConfig'
+pod 'Firebase/Crash'
+end
+```
+
+Run ```pod install``` to download the Firebase SDK into the Pods directory.
+Copy the contents of the Pods directory to the ```sdk/ios``` directory in this repository.
+
+To build for iOS:
+```
+./sky/tools/gn --ios --simulator --enable-firebase
+ninja -C out/ios_debug_sim/ third_party/firebase
+./sky/tools/gn --ios --enable-firebase --runtime-mode release
+ninja -C out/ios_release/ third_party/firebase
+lipo out/ios_debug_sim/libFirebase.dylib out/ios_release/libFirebase.dylib -create -output third_party/firebase/lib/generated/ios/libFirebase.dylib
+cp out/ios_debug_sim/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
+```
+
+To build for Android:
+```
+./sky/tools/gn --android --enable-firebase
+ninja -C out/android_debug/
+cp out/android_debug//gen/third_party/firebase/interfaces_java.jar third_party/firebase/android/mojo/libs
+cp out/android_debug//gen/mojo/public/java/bindings.jar third_party/firebase/android/mojo/libs
+cp out/android_debug//gen/mojo/public/java/system.jar third_party/firebase/android/mojo/libs
+cp out/android_debug/gen/third_party/firebase/mojom/firebase.mojom.dart third_party/firebase/lib/generated
+(cd third_party/firebase/android && ./gradlew build)
+cp -r third_party/firebase/android/mojo/build/intermediates/ third_party/firebase/lib/generated/android/ 2>&1 | grep -v 'Permission denied'
+```
+
 ## License
 
 See the [LICENSE file](https://github.com/flutter/firebase/blob/master/LICENSE).
