@@ -14,6 +14,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseError;
 
@@ -102,7 +103,7 @@ public class FirebaseImpl extends Conversions implements org.chromium.mojom.fire
         DatabaseReferenceImpl.MANAGER.bind(impl, request);
     }
 
-    // @Override
+    @Override
     public void signInAnonymously(final SignInAnonymouslyResponse response) {
         FirebaseAuth.getInstance().signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -115,10 +116,17 @@ public class FirebaseImpl extends Conversions implements org.chromium.mojom.fire
         });
     }
 
-    // @Override
+    @Override
     public void signOut(final SignOutResponse response) {
         FirebaseAuth.getInstance().signOut();
         response.call(null);
+    }
+
+    @Override
+    public void logCrash(String message) {
+        // TODO(jackson): This isn't functional until the crash service is started properly
+        Log.v(TAG, "Firebase crash reporting isn't functional on Android yet. Message:" + message);
+        FirebaseCrash.log(message);
     }
 
     // public domain code from https://gist.github.com/codebutler/2339666
